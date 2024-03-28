@@ -5,30 +5,39 @@
         <div class="sidebar">
           <el-radio-group v-model="isCollapse">
             <el-radio-button :value="false" v-show="isCollapse">
-              <svg-icon icon-name="icon-expand" size="20"></svg-icon>
+              <div class="xy_center">
+                <svg-icon icon-name="icon-expand" size="20"></svg-icon>
+                <span style="font-size: 13px; ">展开</span>
+              </div>
             </el-radio-button>
             <el-radio-button :value="true" v-show="!isCollapse">
-              <svg-icon icon-name="icon-fold" size="20"></svg-icon>
+              <!--<div class="xy_center" style="width: 100px">-->
+              <!--  <svg-icon icon-name="icon-fold" size="20"></svg-icon>-->
+              <!--  <span style="font-size: 13px; ">关闭</span>-->
+              <!--</div>-->
+              <i class="sn-btn">
+                <svg-icon icon-name="icon-fold" size="20"></svg-icon>
+                <span style="font-size: 13px; ">关闭</span>
+              </i>
             </el-radio-button>
           </el-radio-group>
           <el-menu
-              default-active="2"
-              class="el-menu-vertical-demo"
-              :collapse="isCollapse"
-              @open="handleOpen"
-              @close="handleClose"
+            :default-active="active"
+            class="el-menu-vertical-demo"
+            :collapse="isCollapse"
+            @open="handleOpen"
+            @close="handleClose"
           >
-            <el-menu-item index="2">
-              <el-icon><icon-menu /></el-icon>
-              <template #title>热门工具</template>
-            </el-menu-item>
-            <el-menu-item index="3">
-              <el-icon><document /></el-icon>
-              <template #title>在线工具</template>
-            </el-menu-item>
-            <el-menu-item index="4">
-              <el-icon><setting /></el-icon>
-              <template #title>优选工具</template>
+            <el-menu-item
+                v-for="item in anchorList"
+                :index="item.id"
+                :key="item.id"
+                @click="() => anchorPosition(item.anchor)"
+            >
+              <el-icon><svg-icon :icon-name="item.iconClass"></svg-icon></el-icon>
+              <template #title>
+                <span class="sidebar-title">{{ item.text }}</span>
+              </template>
             </el-menu-item>
           </el-menu>
         </div>
@@ -40,16 +49,17 @@
             <div v-for="item in anchorList" :key="item.id">
               <h2 :id="item.anchor">
                 <strong>
-                  <i id="Hot" class="hot" title="hot-tool">{{ item.text }}</i>
+                  <i class="hot">{{ item.text }}</i>
                 </strong>
               </h2>
               <el-row :gutter="20">
                 <el-col :span="spanCol" :key="tool.id" v-for="tool in item.tools">
-                  <ToolCard class="tool-card"
-                            :href="item.path + tool.filename"
-                            :title="tool.title"
-                            :description="tool.description"
-                            :img="tool.icon"
+                  <ToolCard
+                    class="tool-card"
+                    :href="item.path + tool.filename"
+                    :title="tool.title"
+                    :description="tool.description"
+                    :img="tool.icon"
                   ></ToolCard>
                 </el-col>
               </el-row>
@@ -66,243 +76,245 @@ import SvgIcon from '@/components/icon/SvgIcon.vue'
 import SearchNavbar from '@/components/common/SearchNavbar.vue'
 import ToolCard from '@/components/card/ToolCard.vue'
 import { onMounted, onUnmounted, ref } from 'vue'
-import { debounce } from 'lodash';
+import { debounce } from 'lodash'
 
 const anchorList = [
+  {
+    id: 1,
+    anchor: 'hot',
+    text: '热门工具',
+    iconClass: 'icon-tool',
+    path: '/tool/hot/',
+    tools: [
       {
         id: 1,
-        anchor: 'hot',
-        text: '热门工具',
-        iconClass: 'icon-tool',
-        path: '/tool/hot/',
-        tools: [
-          {
-            id: 1,
-            title: 'JSON 在线解析',
-            icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
-            filename: 'JsonFormat',
-            description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出',
-          },
-          {
-            id: 2,
-            title: 'JSON 在线解析',
-            icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
-            filename: 'JsonFormat',
-            description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出',
-          },
-          {
-            id: 3,
-            title: 'JSON 在线解析',
-            icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
-            filename: 'JsonFormat',
-            description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出',
-          },
-          {
-            id: 4,
-            title: 'JSON 在线解析',
-            icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
-            filename: 'JsonFormat',
-            description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出',
-          },          {
-            id: 5,
-            title: 'JSON 在线解析',
-            icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
-            filename: 'JsonFormat',
-            description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出',
-          },
-          {
-            id: 6,
-            title: 'JSON 在线解析',
-            icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
-            filename: 'JsonFormat',
-            description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出',
-          },
-          {
-            id: 7,
-            title: 'JSON 在线解析',
-            icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
-            filename: 'JsonFormat',
-            description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出',
-          }
-        ]
+        title: 'JSON 在线解析',
+        icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
+        filename: 'JsonFormat',
+        description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出'
       },
       {
         id: 2,
-        anchor: 'online',
-        text: '在线工具',
-        iconClass: 'icon-tool',
-        path: '/tool/online/',
-        tools: [
-          {
-            id: 1,
-            title: 'JSON 格式化工具',
-            icon: 'icon-tool',
-            filename: 'json_format.html',
-            description: 'json格式化',
-          }
-        ]
+        title: 'JSON 在线解析',
+        icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
+        filename: 'JsonFormat',
+        description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出'
       },
       {
         id: 3,
-        anchor: 'text',
-        text: '文本工具',
-        iconClass: 'icon-tool',
-        path: '/tools/online/',
-        tools: [
-          {
-            id: 1,
-            title: 'JSON 格式化工具',
-            icon: 'icon-tool',
-            filename: 'json_format.html',
-            description: 'json格式化',
-          }
-        ]
+        title: 'JSON 在线解析',
+        icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
+        filename: 'JsonFormat',
+        description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出'
       },
       {
         id: 4,
-        anchor: 'usually',
-        text: '常用工具',
-        iconClass: 'icon-tool',
-        path: '/tools/online/',
-        tools: [
-          {
-            id: 1,
-            title: 'JSON 格式化工具',
-            icon: 'icon-tool',
-            filename: 'json_format.html',
-            description: 'json格式化',
-          }
-        ]
+        title: 'JSON 在线解析',
+        icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
+        filename: 'JsonFormat',
+        description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出'
       },
       {
         id: 5,
-        anchor: 'compile',
-        text: '编译工具',
-        iconClass: 'icon-tool',
-        path: 'tools/online/',
-        tools: [
-          {
-            id: 1,
-            title: 'JSON 格式化工具',
-            icon: 'icon-tool',
-            filename: 'json_format.html',
-            description: 'json格式化',
-          }
-        ]
+        title: 'JSON 在线解析',
+        icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
+        filename: 'JsonFormat',
+        description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出'
       },
       {
         id: 6,
-        anchor: 'other1',
-        text: '其它工具',
-        iconClass: 'icon-tool',
-        path: 'tools/online/',
-        tools: [
-          {
-            id: 1,
-            title: 'JSON 格式化工具',
-            icon: 'icon-tool',
-            filename: 'json_format.html',
-            description: 'json格式化',
-          }
-        ]
+        title: 'JSON 在线解析',
+        icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
+        filename: 'JsonFormat',
+        description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出'
       },
       {
         id: 7,
-        anchor: 'hot1',
-        text: '热门工具',
-        iconClass: 'icon-tool',
-        path: 'tools/online/',
-        tools: [
-          {
-            id: 1,
-            title: 'JSON 格式化工具',
-            icon: 'icon-tool',
-            filename: 'json_format.html',
-            description: 'json格式化',
-          }
-        ]
-      },
-      {
-        id: 8,
-        anchor: 'online1',
-        text: '在线工具',
-        iconClass: 'icon-tool',
-        path: 'tools/online/',
-        tools: [
-          {
-            id: 1,
-            title: 'JSON 格式化工具',
-            icon: 'icon-tool',
-            filename: 'json_format.html',
-            description: 'json格式化',
-          }
-        ]
-      },
-      {
-        id: 9,
-        anchor: 'text1',
-        text: '文本工具',
-        iconClass: 'icon-tool',
-        path: 'tools/online/',
-        tools: [
-          {
-            id: 1,
-            title: 'JSON 格式化工具',
-            icon: 'icon-tool',
-            filename: 'json_format.html',
-            description: 'json格式化',
-          }
-        ]
-      },
-      {
-        id: 10,
-        anchor: 'usually1',
-        text: '常用工具',
-        iconClass: 'icon-tool',
-        path: 'tools/online/',
-        tools: [
-          {
-            id: 1,
-            title: 'JSON 格式化工具',
-            icon: 'icon-tool',
-            filename: 'json_format.html',
-            description: 'json格式化',
-          }
-        ]
-      },
-      {
-        id: 11,
-        anchor: 'compile1',
-        text: '编译工具',
-        iconClass: 'icon-tool',
-        path: 'tools/online/',
-        tools: [
-          {
-            id: 1,
-            title: 'JSON 格式化工具',
-            icon: 'icon-tool',
-            filename: 'json_format.html',
-            description: 'json格式化',
-          }
-        ]
+        title: 'JSON 在线解析',
+        icon: 'https://media.wowkie.com/uploads/20230417/20b49d8fffb76055a2061aafaba6ecd4.png',
+        filename: 'JsonFormat',
+        description: '方便快捷地解析和查看JSON数据结构，支持美化、高亮、错误提示、压缩、多格式输出'
       }
     ]
+  },
+  {
+    id: 2,
+    anchor: 'online',
+    text: '在线工具',
+    iconClass: 'icon-tool',
+    path: '/tool/online/',
+    tools: [
+      {
+        id: 1,
+        title: 'JSON 格式化工具',
+        icon: 'icon-tool',
+        filename: 'json_format.html',
+        description: 'json格式化'
+      }
+    ]
+  },
+  {
+    id: 3,
+    anchor: 'text',
+    text: '文本工具',
+    iconClass: 'icon-tool',
+    path: '/tools/online/',
+    tools: [
+      {
+        id: 1,
+        title: 'JSON 格式化工具',
+        icon: 'icon-tool',
+        filename: 'json_format.html',
+        description: 'json格式化'
+      }
+    ]
+  },
+  {
+    id: 4,
+    anchor: 'usually',
+    text: '常用工具',
+    iconClass: 'icon-tool',
+    path: '/tools/online/',
+    tools: [
+      {
+        id: 1,
+        title: 'JSON 格式化工具',
+        icon: 'icon-tool',
+        filename: 'json_format.html',
+        description: 'json格式化'
+      }
+    ]
+  },
+  {
+    id: 5,
+    anchor: 'compile',
+    text: '编译工具',
+    iconClass: 'icon-tool',
+    path: 'tools/online/',
+    tools: [
+      {
+        id: 1,
+        title: 'JSON 格式化工具',
+        icon: 'icon-tool',
+        filename: 'json_format.html',
+        description: 'json格式化'
+      }
+    ]
+  },
+  {
+    id: 6,
+    anchor: 'other1',
+    text: '其它工具',
+    iconClass: 'icon-tool',
+    path: 'tools/online/',
+    tools: [
+      {
+        id: 1,
+        title: 'JSON 格式化工具',
+        icon: 'icon-tool',
+        filename: 'json_format.html',
+        description: 'json格式化'
+      }
+    ]
+  },
+  {
+    id: 7,
+    anchor: 'hot1',
+    text: '热门工具',
+    iconClass: 'icon-tool',
+    path: 'tools/online/',
+    tools: [
+      {
+        id: 1,
+        title: 'JSON 格式化工具',
+        icon: 'icon-tool',
+        filename: 'json_format.html',
+        description: 'json格式化'
+      }
+    ]
+  },
+  {
+    id: 8,
+    anchor: 'online1',
+    text: '在线工具',
+    iconClass: 'icon-tool',
+    path: 'tools/online/',
+    tools: [
+      {
+        id: 1,
+        title: 'JSON 格式化工具',
+        icon: 'icon-tool',
+        filename: 'json_format.html',
+        description: 'json格式化'
+      }
+    ]
+  },
+  {
+    id: 9,
+    anchor: 'text1',
+    text: '文本工具',
+    iconClass: 'icon-tool',
+    path: 'tools/online/',
+    tools: [
+      {
+        id: 1,
+        title: 'JSON 格式化工具',
+        icon: 'icon-tool',
+        filename: 'json_format.html',
+        description: 'json格式化'
+      }
+    ]
+  },
+  {
+    id: 10,
+    anchor: 'usually1',
+    text: '常用工具',
+    iconClass: 'icon-tool',
+    path: 'tools/online/',
+    tools: [
+      {
+        id: 1,
+        title: 'JSON 格式化工具',
+        icon: 'icon-tool',
+        filename: 'json_format.html',
+        description: 'json格式化'
+      }
+    ]
+  },
+  {
+    id: 11,
+    anchor: 'compile1',
+    text: '编译工具',
+    iconClass: 'icon-tool',
+    path: 'tools/online/',
+    tools: [
+      {
+        id: 1,
+        title: 'JSON 格式化工具',
+        icon: 'icon-tool',
+        filename: 'json_format.html',
+        description: 'json格式化'
+      }
+    ]
+  }
+]
 const selectedAnchor = ref('hot')
 const spanCol = ref<number>(4)
 const isCollapse = ref(false)
+const active = ref(1)
 const anchorPosition = (anchor: string) => {
   selectedAnchor.value = anchor
   // 如果是第一个元素，将滚动条其移动到顶部
   if (anchor === 'hot') {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   } else {
     const el = document.getElementById(anchor)
-    const offset = -100;
-    const rect = el?.getBoundingClientRect() || { top: 0 };
+    const offset = -100
+    const rect = el?.getBoundingClientRect() || { top: 0 }
     window.scrollTo({
-      top: window.scrollY  + rect.top + offset,
+      top: window.scrollY + rect.top + offset,
       behavior: 'smooth'
-    });
+    })
     // el?.scrollIntoView({ behavior: 'smooth', block: "start", inline: "nearest" })
   }
 }
@@ -315,9 +327,9 @@ const handleScroll = debounce(() => {
   anchorList.forEach((item) => {
     const el = document.getElementById(item.anchor)
     const rect = el?.getBoundingClientRect() || { top: 0 }
-    const offset = -100;
+    const offset = -100
     if (rect.top <= window.innerHeight + offset) {
-      selectedAnchor.value = item.anchor
+      // active.value = item.id
       return
     }
   })
@@ -356,7 +368,12 @@ const checkScreenWidth = () => {
 <style>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   min-height: 80vh;
-  max-height: 80vh;
+  max-height: 90vh;
+  overflow-y: auto;
+  --el-menu-active-color: #fff;
+  --el-menu-bg-color: #eff4f8;
+  border: none;
+  margin-top: 25px;
 }
 .el-radio-button__inner {
   padding: 4px 8px;
@@ -364,26 +381,66 @@ const checkScreenWidth = () => {
   border-bottom-right-radius: unset !important;
   border-bottom-left-radius: unset !important;
 }
+.el-menu-item.is-active {
+  color: #fff;
+  background-color: #ff6000;
+  border-radius: 10px;
+}
+.el-menu-item {
+  height: 42px;
+}
 </style>
 
 <style scoped lang="scss">
+.sn-btn {
+  display: block;
+  line-height: 20px;
+  padding: 4px 42px;
+  color: #3a3a3a;
+  white-space: nowrap;
+  background-color: #fff;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+}
+
 .aside-wrap {
   position: relative;
   width: 150px;
+  margin-right: 20px;
 }
+
 .sidebar {
   position: fixed;
   left: 20px;
-  top: 65px;
+  top: 95px;
   width: 150px;
 }
 
+.hot {
+  display: block;
+  margin-top: 30px;
+  font-weight: bold;
+  color: #3c3c3c;
+  font-size: 20px;
+}
+
+.tool-card {
+  margin-top: 20px;
+}
+
+.sidebar-title {
+  font-size: 14px;
+  font-family: 'PingFang SC';
+}
 @media (min-width: 750px) {
   .main {
     padding: 15px;
   }
 }
-
 
 @media (min-width: 992px) {
   .sidebar {
@@ -396,5 +453,4 @@ const checkScreenWidth = () => {
     display: none;
   }
 }
-
 </style>
