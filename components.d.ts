@@ -8,6 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ButtonClear: typeof import('./src/components/nav/ButtonClear.vue')['default']
+    ElAnchor: typeof import('element-plus/es')['ElAnchor']
+    ElAnchorLink: typeof import('element-plus/es')['ElAnchorLink']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBadge: typeof import('element-plus/es')['ElBadge']

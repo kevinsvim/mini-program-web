@@ -68,6 +68,10 @@ const { img, title, description, width, height, alt, href } = props
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  // 解决<750px时的高度塌陷
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
   .item-title {
     display: flex;
     align-items: center;
