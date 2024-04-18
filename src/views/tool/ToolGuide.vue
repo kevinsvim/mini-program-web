@@ -8,29 +8,28 @@
             <span>全部工具导航</span>
           </div>
           <el-anchor
-              class="sidebar-anchor"
-              :container="containerRef"
-              direction="vertical"
-              type="default"
-              :offset="30"
-              @click="$event.preventDefault()"
+            class="sidebar-anchor"
+            :container="containerRef"
+            direction="vertical"
+            type="default"
+            :offset="30"
+            @click="$event.preventDefault()"
           >
             <el-anchor-link
-                style="height: 42px;"
-                class="xy_center"
-                :class="{ 'is-active': selectedAnchor === item.anchor }"
-                v-for="item in anchorList"
-                :href="'#'+item.anchor"
-                :title="item.anchor"
-                :key="item.id"
-                @click="selectedAnchor = item.anchor"
-                >
+              style="height: 42px"
+              class="xy_center"
+              :class="{ 'is-active': selectedAnchor === item.anchor }"
+              v-for="item in anchorList"
+              :href="'#' + item.anchor"
+              :title="item.anchor"
+              :key="item.id"
+              @click="selectedAnchor = item.anchor"
+            >
               <template #default>
                 <div class="xy_center">
                   <svg-icon :icon-name="item.iconClass" size="16"></svg-icon>
                   <span class="sidebar-title">{{ item.text }}</span>
                 </div>
-
               </template>
             </el-anchor-link>
           </el-anchor>
@@ -40,25 +39,24 @@
         <div class="main">
           <div class="main-wrap">
             <SearchNavbar></SearchNavbar>
-              <div v-for="item in anchorList" :key="item.id">
-                <h2 :id="item.anchor">
-                  <strong>
-                    <i class="hot">{{ item.text }}</i>
-                  </strong>
-                </h2>
-                <el-row :gutter="20">
-                  <el-col :span="spanCol" :key="tool.id" v-for="tool in item.tools">
-                    <ToolCard
-                        class="tool-card"
-                        :href="item.path + tool.filename"
-                        :title="tool.title"
-                        :description="tool.description"
-                        :img="tool.icon"
-                    ></ToolCard>
-                  </el-col>
-                </el-row>
+            <div v-for="item in anchorList" :key="item.id">
+              <h2 :id="item.anchor">
+                <strong>
+                  <i class="hot">{{ item.text }}</i>
+                </strong>
+              </h2>
+              <el-row :gutter="20">
+                <el-col :span="spanCol" :key="tool.id" v-for="tool in item.tools">
+                  <ToolCard
+                    class="tool-card"
+                    :href="item.path + tool.filename"
+                    :title="tool.title"
+                    :description="tool.description"
+                    :img="tool.icon"
+                  ></ToolCard>
+                </el-col>
+              </el-row>
             </div>
-
           </div>
         </div>
       </el-main>
@@ -370,9 +368,11 @@ const checkScreenWidth = () => {
   background-color: #ff6000;
   border-radius: 10px;
 }
+
 .el-menu-item {
   height: 42px;
 }
+
 .el-anchor.el-anchor--vertical .el-anchor__list {
   padding-left: unset;
 }
@@ -397,7 +397,7 @@ const checkScreenWidth = () => {
 
   span {
     font-size: 15px;
-    font-family: YShayuTi,"Microsoft YaHei",sans-serif;
+    font-family: YShayuTi, 'Microsoft YaHei', sans-serif;
     color: #3a3a3a;
   }
 }
@@ -429,7 +429,7 @@ const checkScreenWidth = () => {
 
 .sidebar-title {
   font-size: 14px;
-  font-family:  "Microsoft YaHei" sans-serif;
+  font-family: 'Microsoft YaHei' sans-serif;
   color: #5a5a5a;
   margin-left: 5px;
 }
@@ -439,6 +439,7 @@ const checkScreenWidth = () => {
   background-color: #ff6000;
   border-radius: 10px;
 }
+
 @media (min-width: 992px) {
   .sidebar {
     display: block;
