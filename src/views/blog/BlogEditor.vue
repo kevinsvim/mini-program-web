@@ -27,23 +27,6 @@
           <el-divider/>
           <div class="aie-container-footer">
             <div class="setting">
-              <!-- 添加封面 -->
-              <div class="setting-item">
-                <label class="setting-item-title">添加封面</label>
-                <el-upload
-                    class="avatar-uploader"
-                    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                    :show-file-list="false">
-                  <img v-if="article.cover" :src="article.cover" class="avatar"  alt=""/>
-                  <svg-icon v-else icon-name="icon-add" size="14"></svg-icon>
-                  <span style="margin-left: 5px">添加文章封面</span>
-                  <template #tip>
-                    <div class="el-upload__tip">
-                      图片支持jpg/png，大小少于500KB.
-                    </div>
-                  </template>
-                </el-upload>
-              </div>
               <!-- 文章标签 -->
               <div class="setting-item">
                 <label class="setting-item-title">文章标签
@@ -55,6 +38,12 @@
                   <svg-icon icon-name="icon-add" size="12"></svg-icon>
                   <span class="ml_4">添加文章标签</span>
                 </el-button>
+                <div style="position: absolute; top: 45px; left: 123px; z-index: 99">
+                  <AddTagBox
+
+                  ></AddTagBox>
+                </div>
+
               </div>
               <!-- 创作声明 -->
               <div class="setting-item">
@@ -120,6 +109,23 @@
                   <el-radio :label="3">仅我可见</el-radio>
                 </el-radio-group>
               </div>
+              <!-- 添加封面 -->
+              <div class="setting-item">
+                <label class="setting-item-title">添加封面</label>
+                <el-upload
+                    class="avatar-uploader"
+                    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+                    :show-file-list="false">
+                  <img v-if="article.cover" :src="article.cover" class="avatar"  alt=""/>
+                  <svg-icon v-else icon-name="icon-add" size="14"></svg-icon>
+                  <span style="margin-left: 5px">添加文章封面</span>
+                  <template #tip>
+                    <div class="el-upload__tip">
+                      图片支持jpg/png，大小少于500KB.
+                    </div>
+                  </template>
+                </el-upload>
+              </div>
             </div>
           </div>
         </div>
@@ -135,12 +141,13 @@
 <script setup lang="ts">
 import { AiEditor } from "aieditor";
 import "aieditor/dist/style.css";
-import {onMounted, ref, onUnmounted, onBeforeUnmount, reactive, watch} from "vue";
+import { onMounted, ref, onUnmounted, onBeforeUnmount, reactive, watch, unref } from "vue";
 import { useRoute } from "vue-router";
 import SvgIcon from "@/components/icon/SvgIcon.vue";
 import LogoTitle from "@/components/nav/LogoTitle.vue";
 import type { BlogTypes } from "@/types/blog";
 import articleApi from "@/api/article";
+import AddTagBox from "@/components/box/AddTagBox.vue";
 
 const route = useRoute()
 const divRef = ref()
@@ -323,7 +330,7 @@ onBeforeUnmount(() => {
     max-width: 800px;
     background-color: #fff;
     text-align: center;
-    line-height: 56px;
+    //line-height: 56px;
     font-size: 14px;
     color: #a0a0a0;
     z-index: 1;
@@ -362,6 +369,7 @@ onBeforeUnmount(() => {
 }
 
 .setting-item {
+  position: relative;
   display: flex;
   margin-top: 15px;
 }
