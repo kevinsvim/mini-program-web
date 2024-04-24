@@ -18,25 +18,27 @@
     <div class="mark_tree">
       <ul class="mark_tree_left">
         <el-scrollbar height="264px" :always="true">
-            <li @click="() => handleParentLabelClick(item.id)"
-                v-for="item in labelList"
+            <li @click="() => handleParentTagClick(item.id)"
+                v-for="item in tagList"
                 :key="item.id"
-                :class="{ active: activeLabelId == item.id}"
-            >{{ item.label }}</li>
+                :class="{ active: activeTagId == item.id}"
+            >{{ item.tag }}</li>
         </el-scrollbar>
       </ul>
       <div class="mark_tree_right">
         <el-scrollbar height="264px">
           <div class="addTagTitle">添加标签</div>
-          <div class="sub_label">
+          <div class="sub_tag">
             <el-tag
-                v-for="item in activeLabels"
-                :key="item.label"
+                v-for="item in activeTags"
+                :key="item.tag"
                 type="success"
                 effect="light"
-                style="margin: 0 15px 15px 0"
+                class="tagClass"
+                @click="() => handleSelectTag(item.id)"
+                style="margin: 0 15px 15px 0; cursor: pointer;"
             >
-              {{ item.label }}
+              {{ item.tag }}
             </el-tag>
           </div>
 
@@ -50,138 +52,145 @@
 import {reactive, ref} from 'vue'
 
 const tag = ref()
-const labelList = reactive([
+const tagList = reactive([
   {
     id: 1,
-    label: '推荐',
+    tag: '推荐',
     children: [
       {
         id: 1,
-        label: 'Java'
+        tag: 'Java'
       },
       {
         id: 2,
-        label: 'CountDownLatch'
+        tag: 'CountDownLatch'
       },
       {
         id: 3,
-        label: 'ThreadLocal'
+        tag: 'ThreadLocal'
       },
       {
         id: 4,
-        label: 'JVM'
+        tag: 'JVM'
       },
       {
         id: 5,
-        label: 'Java'
+        tag: 'Java'
       }
     ]
   },
   {
     id: 2,
-    label: 'Python',
+    tag: 'Python',
     children: [
       {
         id: 1,
-        label: 'Pytorch'
+        tag: 'Pytorch'
       },
       {
         id: 2,
-        label: 'test'
+        tag: 'test'
       }
     ]
   },
   {
     id: 3,
-    label: 'Java',
+    tag: 'Java',
     children: [
       {
         id: 1,
-        label: 'ssss'
+        tag: 'ssss'
       }
     ]
   },
   {
     id: 4,
-    label: '编程语言',
+    tag: '编程语言',
     children: [
       {
         id: 1,
-        label: ''
+        tag: ''
       }
     ]
   },
   {
     id: 5,
-    label: '开发工具',
+    tag: '开发工具',
     children: [
       {
         id: 1,
-        label: ''
+        tag: ''
       }
     ]
   },
   {
     id: 6,
-    label: '数据结构与算法',
+    tag: '数据结构与算法',
     children: [
       {
         id: 1,
-        label: ''
+        tag: ''
       }
     ]
   },
   {
     id: 7,
-    label: '大数据',
+    tag: '大数据',
     children: [
       {
         id: 1,
-        label: ''
+        tag: ''
       }
     ]
   },
   {
     id: 8,
-    label: '前端',
+    tag: '前端',
     children: [
       {
         id: 1,
-        label: ''
+        tag: ''
       }
     ]
   },
   {
     id: 9,
-    label: '后端',
+    tag: '后端',
     children: [
       {
         id: 1,
-        label: ''
+        tag: ''
       }
     ]
   }
 ])
 // 默认激活父标签id
-const activeLabelId = ref<number>(labelList[0]?.id);
-const activeLabels = reactive<any>([]);
-activeLabels.push(...labelList[0].children);
+const activeTagId = ref<number>(tagList[0]?.id);
+const activeTags = reactive<any>([]);
+activeTags.push(...tagList[0].children);
 
 /**
  * 处理父标签被点击
- * @param id
+ * @param pId 父标签id
  */
-const handleParentLabelClick = (id: number) => {
-  if (activeLabelId.value === id) return
-  activeLabelId.value = id
+const handleParentTagClick = (pId: number) => {
+  if (activeTagId.value === pId) return
+  activeTagId.value = pId
   // 过滤出指定的子标签列表
-  activeLabels.length = 0;
-  labelList.forEach(item => {
-    if (item.id === id) {
-      activeLabels.push(...item.children)
+  activeTags.length = 0;
+  tagList.forEach(item => {
+    if (item.id === pId) {
+      activeTags.push(...item.children)
       return
     }
   })
+}
+/**
+ * 处理选中某个子标签
+ * @param subId 子标签id
+ */
+const handleSelectTag = (subId: number) => {
+
 }
 </script>
 
@@ -255,11 +264,15 @@ const handleParentLabelClick = (id: number) => {
   }
 }
 
-.sub_label {
+.sub_tag {
   display: flex;
   flex-wrap: wrap;
   margin-top: 5px;
   text-align: left;
+}
+
+.tagClass:hover {
+  background-color: #f6f3ee;
 }
 
 // 修改滚动条宽度
