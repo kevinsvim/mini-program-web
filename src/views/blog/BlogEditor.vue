@@ -34,16 +34,39 @@
                     <svg-icon icon-name="icon-tip"></svg-icon>
                   </span>
                 </label>
-                <el-button plain size="small">
-                  <svg-icon icon-name="icon-add" size="12"></svg-icon>
-                  <span class="ml_4">添加文章标签</span>
-                </el-button>
+                <!--<el-button plain size="small">-->
+                <!--  <svg-icon icon-name="icon-add" size="12"></svg-icon>-->
+                <!--  <span class="ml_4">添加文章标签</span>-->
+                <!--</el-button>-->
+                <div class="flex gap-2">
+                  <el-tag
+                      v-for="tag in dynamicTags"
+                      :key="tag"
+                      closable
+                      :disable-transitions="false"
+                      @close="handleClose(tag)"
+                  >
+                    {{ tag }}
+                  </el-tag>
+                  <el-input
+                      v-if="inputVisible"
+                      ref="InputRef"
+                      v-model="inputValue"
+                      class="w-20"
+                      size="small"
+                      @keyup.enter="handleInputConfirm"
+                      @blur="handleInputConfirm"
+                  />
+                  <el-button id="addTagBtn" v-else class="button-new-tag" size="small" @click.stop="showInput">
+                    + 添加文章标签
+                  </el-button>
+                </div>
                 <div style="position: absolute; top: 45px; left: 123px; z-index: 99">
                   <AddTagBox
-
+                      v-show="isShowTagBox"
+                      v-click-outside="handleClickOutside"
                   ></AddTagBox>
                 </div>
-
               </div>
               <!-- 创作声明 -->
               <div class="setting-item">
@@ -237,6 +260,26 @@ const beforeLeave = async (e: any) => {
 onBeforeUnmount(() => {
   window.removeEventListener('beforeunload', beforeLeave)
 })
+
+// -------------------------------------底部功能处理------------------------------------- //
+/**
+ * 点击添加文章标签
+ */
+// 是否显示box弹窗
+const isShowTagBox = ref(false)
+const addTagBtnRef = ref()
+// 按钮是否被点击
+const showInput = () => {
+  // 1. 显示或关闭弹框
+  isShowTagBox.value = !isShowTagBox.value
+}
+const handleClickOutside = (event: Event) => {
+  const target = event.target
+  const el = document.getElementById("addTagBox")
+  if (el && !el.contains(target)) {
+    isShowTagBox.value = false
+  }
+}
 </script>
 <style lang="scss">
 .editor {
