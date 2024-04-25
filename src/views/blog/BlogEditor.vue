@@ -57,15 +57,18 @@
                       @keyup.enter="handleInputConfirm"
                       @blur="handleInputConfirm"
                   />
-                  <el-button id="addTagBtn" v-else class="button-new-tag" size="small" @click.stop="showInput">
+                  <el-button id="addTagBtn" class="button-new-tag" size="small" @click.stop="showInput">
                     + 添加文章标签
                   </el-button>
                 </div>
                 <div style="position: absolute; top: 45px; left: 123px; z-index: 99">
-                  <AddTagBox
-                      v-show="isShowTagBox"
-                      v-click-outside="handleClickOutside"
-                  ></AddTagBox>
+                  <transition name="el-zoom-in-top">
+                    <AddTagBox
+                        v-show="isShowTagBox"
+                        v-click-outside="handleClickOutside"
+                    ></AddTagBox>
+                  </transition>
+
                 </div>
               </div>
               <!-- 创作声明 -->
@@ -267,16 +270,15 @@ onBeforeUnmount(() => {
  */
 // 是否显示box弹窗
 const isShowTagBox = ref(false)
-const addTagBtnRef = ref()
 // 按钮是否被点击
 const showInput = () => {
   // 1. 显示或关闭弹框
   isShowTagBox.value = !isShowTagBox.value
 }
 const handleClickOutside = (event: Event) => {
-  const target = event.target
-  const el = document.getElementById("addTagBox")
-  if (el && !el.contains(target)) {
+  const target = (event.target as HTMLElement)
+  const el = document.getElementById("addTagBtn")
+  if (!el?.contains(target)) {
     isShowTagBox.value = false
   }
 }

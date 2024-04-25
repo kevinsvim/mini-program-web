@@ -1,3 +1,173 @@
+<script setup lang="ts">
+import { reactive, ref } from 'vue'
+
+interface Tag {
+  id: number
+  tag: string
+  children?: Tag[]
+}
+interface IProps {
+  // 标签列表
+  tagList?: Tag[]
+  // 标题
+  title?: string
+  // 输入框提示
+  placeholder?: string
+  // 子标题
+  subTitle?: string
+  // 是否具备输入功能
+  isShowInput?: boolean
+}
+const props = withDefaults(defineProps<IProps>(), {
+  tagList: () => [
+    {
+      id: 1,
+      tag: '推荐',
+      children: [
+        {
+          id: 1,
+          tag: 'Java'
+        },
+        {
+          id: 2,
+          tag: 'CountDownLatch'
+        },
+        {
+          id: 3,
+          tag: 'ThreadLocal'
+        },
+        {
+          id: 4,
+          tag: 'JVM'
+        },
+        {
+          id: 5,
+          tag: 'Java'
+        }
+      ]
+    },
+    {
+      id: 2,
+      tag: 'Python',
+      children: [
+        {
+          id: 1,
+          tag: 'Pytorch'
+        },
+        {
+          id: 2,
+          tag: 'test'
+        }
+      ]
+    },
+    {
+      id: 3,
+      tag: 'Java',
+      children: [
+        {
+          id: 1,
+          tag: 'ssss'
+        }
+      ]
+    },
+    {
+      id: 4,
+      tag: '编程语言',
+      children: [
+        {
+          id: 1,
+          tag: ''
+        }
+      ]
+    },
+    {
+      id: 5,
+      tag: '开发工具',
+      children: [
+        {
+          id: 1,
+          tag: ''
+        }
+      ]
+    },
+    {
+      id: 6,
+      tag: '数据结构与算法',
+      children: [
+        {
+          id: 1,
+          tag: ''
+        }
+      ]
+    },
+    {
+      id: 7,
+      tag: '大数据',
+      children: [
+        {
+          id: 1,
+          tag: ''
+        }
+      ]
+    },
+    {
+      id: 8,
+      tag: '前端',
+      children: [
+        {
+          id: 1,
+          tag: ''
+        }
+      ]
+    },
+    {
+      id: 9,
+      tag: '后端',
+      children: [
+        {
+          id: 1,
+          tag: ''
+        }
+      ]
+    }
+  ],
+  title: '文章标签',
+  placeholder: '请输入文字搜索，按Enter可以自定义添加标签',
+  subTitle: '添加标签',
+  isShowInput: true,
+})
+const { tagList, title, placeholder, subTitle, isShowInput } = props
+const tag = ref()
+// 默认激活父标签id
+const activeTagId = ref<number>(tagList[0]?.id);
+const activeTags = reactive<any>([]);
+activeTags.push(...tagList[0].children);
+
+/**
+ * 处理父标签被点击
+ * @param pId 父标签id
+ */
+const handleParentTagClick = (pId: number) => {
+  if (activeTagId.value === pId) return
+  activeTagId.value = pId
+  // 过滤出指定的子标签列表
+  activeTags.length = 0;
+  tagList.forEach(item => {
+    if (item.id === pId) {
+      activeTags.push(...item.children)
+      return
+    }
+  })
+}
+/**
+ * 处理选中某个子标签
+ * @param subId 子标签id
+ */
+const handleSelectTag = (subId: number) => {
+
+}
+</script>
+
 <template>
   <div class="mark_box">
     <!-- 顶部 -->
@@ -47,152 +217,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import {reactive, ref} from 'vue'
-
-const tag = ref()
-const tagList = reactive([
-  {
-    id: 1,
-    tag: '推荐',
-    children: [
-      {
-        id: 1,
-        tag: 'Java'
-      },
-      {
-        id: 2,
-        tag: 'CountDownLatch'
-      },
-      {
-        id: 3,
-        tag: 'ThreadLocal'
-      },
-      {
-        id: 4,
-        tag: 'JVM'
-      },
-      {
-        id: 5,
-        tag: 'Java'
-      }
-    ]
-  },
-  {
-    id: 2,
-    tag: 'Python',
-    children: [
-      {
-        id: 1,
-        tag: 'Pytorch'
-      },
-      {
-        id: 2,
-        tag: 'test'
-      }
-    ]
-  },
-  {
-    id: 3,
-    tag: 'Java',
-    children: [
-      {
-        id: 1,
-        tag: 'ssss'
-      }
-    ]
-  },
-  {
-    id: 4,
-    tag: '编程语言',
-    children: [
-      {
-        id: 1,
-        tag: ''
-      }
-    ]
-  },
-  {
-    id: 5,
-    tag: '开发工具',
-    children: [
-      {
-        id: 1,
-        tag: ''
-      }
-    ]
-  },
-  {
-    id: 6,
-    tag: '数据结构与算法',
-    children: [
-      {
-        id: 1,
-        tag: ''
-      }
-    ]
-  },
-  {
-    id: 7,
-    tag: '大数据',
-    children: [
-      {
-        id: 1,
-        tag: ''
-      }
-    ]
-  },
-  {
-    id: 8,
-    tag: '前端',
-    children: [
-      {
-        id: 1,
-        tag: ''
-      }
-    ]
-  },
-  {
-    id: 9,
-    tag: '后端',
-    children: [
-      {
-        id: 1,
-        tag: ''
-      }
-    ]
-  }
-])
-// 默认激活父标签id
-const activeTagId = ref<number>(tagList[0]?.id);
-const activeTags = reactive<any>([]);
-activeTags.push(...tagList[0].children);
-
-/**
- * 处理父标签被点击
- * @param pId 父标签id
- */
-const handleParentTagClick = (pId: number) => {
-  if (activeTagId.value === pId) return
-  activeTagId.value = pId
-  // 过滤出指定的子标签列表
-  activeTags.length = 0;
-  tagList.forEach(item => {
-    if (item.id === pId) {
-      activeTags.push(...item.children)
-      return
-    }
-  })
-}
-/**
- * 处理选中某个子标签
- * @param subId 子标签id
- */
-const handleSelectTag = (subId: number) => {
-
-}
-</script>
 
 <style scoped lang="scss">
 .mark_box {
