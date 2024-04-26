@@ -1,23 +1,28 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue'
+import type { BlogTypes } from "@/types/blog";
 
 interface Tag {
-  id: number;
-  tag: string;
-  children?: Tag[];
+  id: number
+  tag: string
+  selected?: boolean
+  children?: Tag[]
 }
+
 interface IProps {
   // 标签列表
-  tagList?: Tag[];
+  tagList?: Tag[]
   // 标题
-  title?: string;
+  title?: string
   // 输入框提示
-  placeholder?: string;
+  placeholder?: string
   // 子标题
-  subTitle?: string;
+  subTitle?: string
   // 是否具备输入功能
-  isShowInput?: boolean;
+  isShowInput?: boolean
 }
+
+const emit = defineEmits(['addTag'])
 const props = withDefaults(defineProps<IProps>(), {
   tagList: () => [
     {
@@ -134,52 +139,70 @@ const props = withDefaults(defineProps<IProps>(), {
   title: '文章标签',
   placeholder: '请输入文字搜索，按Enter可以自定义添加标签',
   subTitle: '添加标签',
-  isShowInput: true,
+  isShowInput: true
 })
-const { tagList, title, placeholder, subTitle, isShowInput } = props;
-const tag = ref();
+const { tagList, title, placeholder, subTitle, isShowInput } = props
+const tag = ref()
 // 默认激活父标签id
-const activeTagId = ref<number>(tagList[0]?.id);
-const activeTags = reactive<any>([]);
-activeTags.push(...tagList[0]?.children ?? []);
-
-
+const activeTagId = ref<number>(tagList[0]?.id)
+const activeTags = reactive<any>([])
+const restaurants = ref<BlogTypes.RestaurantItem[]>([])
+activeTags.push(...(tagList[0]?.children ?? []))
+const hasSelectedTags: number[] = []
 /**
  * 处理父标签被点击
  * @param pId 父标签id
  */
 const handleParentTagClick = (pId: number) => {
-  if (activeTagId.value === pId) return;
-  activeTagId.value = pId;
+  if (activeTagId.value === pId) return
+  activeTagId.value = pId
   // 过滤出指定的子标签列表
-  activeTags.length = 0;
-  tagList.forEach(item => {
+  activeTags.length = 0
+  tagList.forEach((item) => {
     if (item.id === pId) {
-      activeTags.push(...(item.children ?? []));
-      return;
+      activeTags.push(...(item.children ?? []))
+      return
     }
   })
-}
-/**
- * 处理选中某个子标签
- * @param subId 子标签id
- */
-const handleSelectTag = (subId: number) => {
-
 }
 
 const querySearch = (queryString: string, cb: any) => {
   const results = queryString
-      ? restaurants.value.filter(createFilter(queryString))
-      : restaurants.value
+    ? restaurants.value.filter(createFilter(queryString))
+    : restaurants.value
   // call callback function to return suggestions
   cb(results)
 }
 const createFilter = (queryString: string) => {
-  return (restaurant: RestaurantItem) => {
-    return (
-        restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-    )
+  return (restaurant: BlogTypes.RestaurantItem) => {
+    return restaurant.tag.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+  }
+}
+const loadAll = () => {
+  // 给每个子标签加入selected，区分是否选择
+  return (
+    tagList?.flatMap((item) => {
+      if (item.children) {
+        return item.children.map((child) => ({
+          ...child,
+          selected: false
+        }))
+      } else {
+        return []
+      }
+    }) ?? []
+  )
+}
+onMounted(() => {
+  restaurants.value = loadAll()
+})
+/**
+ * 点击标签或列表内容
+ */
+const handleSelectTag = (item: BlogTypes.RestaurantItem) => {
+  if (!hasSelectedTags.includes(item.id)) {
+    hasSelectedTags.push(item.id)
+    emit('addTag', item)
   }
 }
 </script>
@@ -194,10 +217,11 @@ const createFilter = (queryString: string) => {
         v-model="tag"
         :fetch-suggestions="querySearch"
         :trigger-on-focus="false"
+        value-key="tag"
         clearable
         style="width: 100%; --el-input-height: 40px"
         :placeholder="placeholder"
-        @select="handleSelect"
+        @select="handleSelectTag"
       />
     </div>
     <!-- tree -->
@@ -224,7 +248,7 @@ const createFilter = (queryString: string) => {
               type="success"
               effect="light"
               class="tagClass"
-              @click="() => handleSelectTag(item.id)"
+              @click="() => handleSelectTag(item)"
               style="margin: 0 15px 15px 0; cursor: pointer"
             >
               {{ item.tag }}

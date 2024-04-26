@@ -40,13 +40,13 @@
                 <!--</el-button>-->
                 <div class="flex gap-2">
                   <el-tag
-                      v-for="tag in dynamicTags"
-                      :key="tag"
+                      v-for="item in hasSelectedTag"
+                      :key="item.id"
                       closable
                       :disable-transitions="false"
-                      @close="handleClose(tag)"
+                      @close="() => handleTagClose(item.id)"
                   >
-                    {{ tag }}
+                    {{ item.tag }}
                   </el-tag>
                   <el-input
                       v-if="inputVisible"
@@ -66,6 +66,8 @@
                     <AddTagBox
                         v-show="isShowTagBox"
                         v-click-outside="handleClickOutside"
+                        :tag-list="tagList"
+                        @add-tag="addTag"
                     ></AddTagBox>
                   </transition>
 
@@ -174,6 +176,7 @@ import LogoTitle from "@/components/nav/LogoTitle.vue";
 import type { BlogTypes } from "@/types/blog";
 import articleApi from "@/api/article";
 import AddTagBox from "@/components/box/AddTagBox.vue";
+import Vue from 'vue'
 
 const route = useRoute()
 const divRef = ref()
@@ -193,7 +196,10 @@ const article = reactive<BlogTypes.ArticleType>({
   isAuthorized : false,
   // 可见范围(1-全部可见，2-粉丝可见，3-仅我可见)
   visibleRange: 1,
+  // 文章标签
+  tagIds: []
 })
+const hasSelectedTag = reactive<BlogTypes.RestaurantItem[]>([])
 const articleSetting = {
   reprinted: '原文允许进行转载，或者已经获得原作者的转载授权。',
   translation: '原文允许进行翻译，或者已经获得原作者的翻译授权。',
@@ -270,11 +276,133 @@ onBeforeUnmount(() => {
  */
 // 是否显示box弹窗
 const isShowTagBox = ref(false)
+const tagList = reactive( [
+  {
+    id: 1,
+    tag: '推荐',
+    children: [
+      {
+        id: 1,
+        tag: 'Java'
+      },
+      {
+        id: 2,
+        tag: 'CountDownLatch'
+      },
+      {
+        id: 3,
+        tag: 'ThreadLocal'
+      },
+      {
+        id: 4,
+        tag: 'JVM'
+      },
+      {
+        id: 5,
+        tag: 'Java'
+      }
+    ]
+  },
+  {
+    id: 2,
+    tag: 'Python',
+    children: [
+      {
+        id: 1,
+        tag: 'Pytorch'
+      },
+      {
+        id: 2,
+        tag: 'test'
+      }
+    ]
+  },
+  {
+    id: 3,
+    tag: 'Java',
+    children: [
+      {
+        id: 1,
+        tag: 'ssss'
+      }
+    ]
+  },
+  {
+    id: 4,
+    tag: '编程语言',
+    children: [
+      {
+        id: 1,
+        tag: ''
+      }
+    ]
+  },
+  {
+    id: 5,
+    tag: '开发工具',
+    children: [
+      {
+        id: 1,
+        tag: ''
+      }
+    ]
+  },
+  {
+    id: 6,
+    tag: '数据结构与算法',
+    children: [
+      {
+        id: 1,
+        tag: ''
+      }
+    ]
+  },
+  {
+    id: 7,
+    tag: '大数据',
+    children: [
+      {
+        id: 1,
+        tag: ''
+      }
+    ]
+  },
+  {
+    id: 8,
+    tag: '前端',
+    children: [
+      {
+        id: 1,
+        tag: ''
+      }
+    ]
+  },
+  {
+    id: 9,
+    tag: '后端',
+    children: [
+      {
+        id: 1,
+        tag: ''
+      }
+    ]
+  }
+])
+
+const loadAll = () => {
+  tagList?.forEach((item) => {
+    item.children.forEach(child => {
+      Object.assign(child, 'selected', false)
+    })
+  })
+}
+loadAll()
 // 按钮是否被点击
 const showInput = () => {
   // 1. 显示或关闭弹框
   isShowTagBox.value = !isShowTagBox.value
 }
+// 避免点击按钮弹框无法打开
 const handleClickOutside = (event: Event) => {
   const target = (event.target as HTMLElement)
   const el = document.getElementById("addTagBtn")
@@ -282,6 +410,26 @@ const handleClickOutside = (event: Event) => {
     isShowTagBox.value = false
   }
 }
+const addTag = (tag: BlogTypes.RestaurantItem) => {
+  if (!article.tagIds.includes(tag.id)) {
+    article.tagIds.push(tag.id)
+    hasSelectedTag.push(tag)
+  }
+}
+/**
+ * 关闭指定标签
+ */
+const handleTagClose = (id: number) => {
+  const index = hasSelectedTag.findIndex(item => item.id === id)
+  if (index != -1) {
+    hasSelectedTag.splice(index, 1)
+
+  }
+}
+onMounted(() => {
+
+})
+
 </script>
 <style lang="scss">
 .editor {

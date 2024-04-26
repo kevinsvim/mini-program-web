@@ -19,5 +19,12 @@ export namespace BlogTypes {
         isAuthorized: boolean,
         /* 可见范围 */
         visibleRange: number
+        /* 文章标签 */
+        tagIds: number[]
+    }
+    export interface RestaurantItem {
+        id: number
+        tag: string
+        selected?: boolean
     }
 }
