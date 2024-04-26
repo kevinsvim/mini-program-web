@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref } from 'vue';
 
 interface Tag {
-  id: number
-  tag: string
-  children?: Tag[]
+  id: number;
+  tag: string;
+  children?: Tag[];
 }
 interface IProps {
   // 标签列表
-  tagList?: Tag[]
+  tagList?: Tag[];
   // 标题
-  title?: string
+  title?: string;
   // 输入框提示
-  placeholder?: string
+  placeholder?: string;
   // 子标题
-  subTitle?: string
+  subTitle?: string;
   // 是否具备输入功能
-  isShowInput?: boolean
+  isShowInput?: boolean;
 }
 const props = withDefaults(defineProps<IProps>(), {
   tagList: () => [
@@ -136,26 +136,27 @@ const props = withDefaults(defineProps<IProps>(), {
   subTitle: '添加标签',
   isShowInput: true,
 })
-const { tagList, title, placeholder, subTitle, isShowInput } = props
-const tag = ref()
+const { tagList, title, placeholder, subTitle, isShowInput } = props;
+const tag = ref();
 // 默认激活父标签id
 const activeTagId = ref<number>(tagList[0]?.id);
 const activeTags = reactive<any>([]);
-activeTags.push(...tagList[0].children);
+activeTags.push(...tagList[0]?.children ?? []);
+
 
 /**
  * 处理父标签被点击
  * @param pId 父标签id
  */
 const handleParentTagClick = (pId: number) => {
-  if (activeTagId.value === pId) return
-  activeTagId.value = pId
+  if (activeTagId.value === pId) return;
+  activeTagId.value = pId;
   // 过滤出指定的子标签列表
   activeTags.length = 0;
   tagList.forEach(item => {
     if (item.id === pId) {
-      activeTags.push(...item.children)
-      return
+      activeTags.push(...(item.children ?? []));
+      return;
     }
   })
 }
@@ -166,21 +167,36 @@ const handleParentTagClick = (pId: number) => {
 const handleSelectTag = (subId: number) => {
 
 }
+
+const querySearch = (queryString: string, cb: any) => {
+  const results = queryString
+      ? restaurants.value.filter(createFilter(queryString))
+      : restaurants.value
+  // call callback function to return suggestions
+  cb(results)
+}
+const createFilter = (queryString: string) => {
+  return (restaurant: RestaurantItem) => {
+    return (
+        restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+    )
+  }
+}
 </script>
 
 <template>
   <div class="mark_box">
     <!-- 顶部 -->
-    <div class="mark_title">文章标签</div>
+    <div class="mark_title">{{ title }}</div>
     <!-- 搜索框 -->
-    <div class="mark_search">
+    <div class="mark_search" v-if="isShowInput">
       <el-autocomplete
         v-model="tag"
         :fetch-suggestions="querySearch"
         :trigger-on-focus="false"
         clearable
         style="width: 100%; --el-input-height: 40px"
-        placeholder="请输入文字搜索，按Enter可以自定义添加标签"
+        :placeholder="placeholder"
         @select="handleSelect"
       />
     </div>
@@ -188,30 +204,32 @@ const handleSelectTag = (subId: number) => {
     <div class="mark_tree">
       <ul class="mark_tree_left">
         <el-scrollbar height="264px" :always="true">
-            <li @click="() => handleParentTagClick(item.id)"
-                v-for="item in tagList"
-                :key="item.id"
-                :class="{ active: activeTagId == item.id}"
-            >{{ item.tag }}</li>
+          <li
+            @click="() => handleParentTagClick(item.id)"
+            v-for="item in tagList"
+            :key="item.id"
+            :class="{ active: activeTagId == item.id }"
+          >
+            {{ item.tag }}
+          </li>
         </el-scrollbar>
       </ul>
       <div class="mark_tree_right">
         <el-scrollbar height="264px">
-          <div class="addTagTitle">添加标签</div>
+          <div class="addTagTitle">{{ subTitle }}</div>
           <div class="sub_tag">
             <el-tag
-                v-for="item in activeTags"
-                :key="item.tag"
-                type="success"
-                effect="light"
-                class="tagClass"
-                @click="() => handleSelectTag(item.id)"
-                style="margin: 0 15px 15px 0; cursor: pointer;"
+              v-for="item in activeTags"
+              :key="item.tag"
+              type="success"
+              effect="light"
+              class="tagClass"
+              @click="() => handleSelectTag(item.id)"
+              style="margin: 0 15px 15px 0; cursor: pointer"
             >
               {{ item.tag }}
             </el-tag>
           </div>
-
         </el-scrollbar>
       </div>
     </div>
@@ -304,5 +322,4 @@ const handleSelectTag = (subId: number) => {
   opacity: 1;
   width: 4px;
 }
-
 </style>
