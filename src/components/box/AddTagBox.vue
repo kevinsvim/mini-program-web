@@ -20,6 +20,8 @@ interface IProps {
   subTitle?: string
   // 是否具备输入功能
   isShowInput?: boolean
+  // 已经选择的标签集合
+  selectedTags?: Tag[]
 }
 
 const emit = defineEmits(['addTag'])
@@ -139,16 +141,16 @@ const props = withDefaults(defineProps<IProps>(), {
   title: '文章标签',
   placeholder: '请输入文字搜索，按Enter可以自定义添加标签',
   subTitle: '添加标签',
-  isShowInput: true
+  isShowInput: true,
+  selectedTags: () => [],
 })
-const { tagList, title, placeholder, subTitle, isShowInput } = props
+const { tagList, title, placeholder, subTitle, isShowInput, selectedTags } = props
 const tag = ref()
 // 默认激活父标签id
 const activeTagId = ref<number>(tagList[0]?.id)
 const activeTags = reactive<any>([])
 const restaurants = ref<BlogTypes.RestaurantItem[]>([])
 activeTags.push(...(tagList[0]?.children ?? []))
-const hasSelectedTags: number[] = []
 /**
  * 处理父标签被点击
  * @param pId 父标签id
@@ -200,8 +202,9 @@ onMounted(() => {
  * 点击标签或列表内容
  */
 const handleSelectTag = (item: BlogTypes.RestaurantItem) => {
-  if (!hasSelectedTags.includes(item.id)) {
-    hasSelectedTags.push(item.id)
+  // 判断selectedTags中是否包含选择的id
+  if (!selectedTags.map(item => item.id).includes(item.id)) {
+    item.selected = true
     emit('addTag', item)
   }
 }
@@ -247,9 +250,9 @@ const handleSelectTag = (item: BlogTypes.RestaurantItem) => {
               :key="item.tag"
               type="success"
               effect="light"
-              class="tagClass"
+              class="tag_content"
+              :class="{ 'is-disabled': item.selected }"
               @click="() => handleSelectTag(item)"
-              style="margin: 0 15px 15px 0; cursor: pointer"
             >
               {{ item.tag }}
             </el-tag>
@@ -337,8 +340,24 @@ const handleSelectTag = (item: BlogTypes.RestaurantItem) => {
   text-align: left;
 }
 
-.tagClass:hover {
-  background-color: #f6f3ee;
+.tag_content {
+  margin: 0 15px 15px 0;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #d1edc4;
+    transition: background-color 0.5s;
+  }
+}
+
+.is-disabled {
+  cursor: not-allowed;
+  background: #f5f7fa;
+  color: #c0c4cc;
+
+  &:hover {
+    background: #f5f7fa;
+  }
 }
 
 // 修改滚动条宽度

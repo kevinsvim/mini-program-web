@@ -18,7 +18,9 @@ export namespace BlogTypes {
         /* 是否授权文章 */
         isAuthorized: boolean,
         /* 可见范围 */
-        visibleRange: number
+        visibleRange: number,
+        /* 文章摘要 */
+        abstract: string,
         /* 文章标签 */
         tagIds: number[]
     }

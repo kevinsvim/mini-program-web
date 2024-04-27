@@ -44,19 +44,12 @@
                       :key="item.id"
                       closable
                       :disable-transitions="false"
-                      @close="() => handleTagClose(item.id)"
+                      size="default"
+                      style="margin-left: 5px"
+                      @close="() => handleTagClose(item)"
                   >
                     {{ item.tag }}
                   </el-tag>
-                  <el-input
-                      v-if="inputVisible"
-                      ref="InputRef"
-                      v-model="inputValue"
-                      class="w-20"
-                      size="small"
-                      @keyup.enter="handleInputConfirm"
-                      @blur="handleInputConfirm"
-                  />
                   <el-button id="addTagBtn" class="button-new-tag" size="small" @click.stop="showInput">
                     + 添加文章标签
                   </el-button>
@@ -68,6 +61,7 @@
                         v-click-outside="handleClickOutside"
                         :tag-list="tagList"
                         @add-tag="addTag"
+                        :selected-tags="hasSelectedTag"
                     ></AddTagBox>
                   </transition>
 
@@ -95,14 +89,22 @@
               </div>
               <!-- 分类专栏 -->
               <div class="setting-item">
-                <label class="setting-item-title">分类专栏
+                <label class="setting-item-title">内容摘要
                   <span class="ml_4">
                     <svg-icon icon-name="icon-tip"></svg-icon>
                   </span>
                 </label>
-                <el-button plain size="small">
-                  <svg-icon icon-name="icon-add" size="12"></svg-icon>
-                  <span class="ml_4">添加分类标签</span>
+                <el-input
+                    v-model="article.abstract"
+                    maxlength="200"
+                    style="width: 540px"
+                    placeholder="摘要：会在推荐、列表等场景外露，帮助读者快速了解内容，支持一键将正文前 200 字符键入摘要文本框"
+                    show-word-limit
+                    rows="3"
+                    type="textarea"
+                />
+                <el-button size="small" round class="extract-btn">
+                  <span style="font-size: 11px;">快速提取</span>
                 </el-button>
               </div>
               <!-- 文章类型 -->
@@ -192,6 +194,7 @@ const article = reactive<BlogTypes.ArticleType>({
   type: 1,
   // 原文链接
   copyFrom: '',
+  abstract: '',
   // 是否授权文章（转载或翻译）
   isAuthorized : false,
   // 可见范围(1-全部可见，2-粉丝可见，3-仅我可见)
@@ -308,11 +311,11 @@ const tagList = reactive( [
     tag: 'Python',
     children: [
       {
-        id: 1,
+        id: 6,
         tag: 'Pytorch'
       },
       {
-        id: 2,
+        id: 7,
         tag: 'test'
       }
     ]
@@ -322,7 +325,7 @@ const tagList = reactive( [
     tag: 'Java',
     children: [
       {
-        id: 1,
+        id: 8,
         tag: 'ssss'
       }
     ]
@@ -332,8 +335,8 @@ const tagList = reactive( [
     tag: '编程语言',
     children: [
       {
-        id: 1,
-        tag: ''
+        id: 9,
+        tag: 'Golang'
       }
     ]
   },
@@ -342,8 +345,8 @@ const tagList = reactive( [
     tag: '开发工具',
     children: [
       {
-        id: 1,
-        tag: ''
+        id: 10,
+        tag: 'IDEA'
       }
     ]
   },
@@ -352,8 +355,8 @@ const tagList = reactive( [
     tag: '数据结构与算法',
     children: [
       {
-        id: 1,
-        tag: ''
+        id: 11,
+        tag: '二叉树'
       }
     ]
   },
@@ -362,8 +365,8 @@ const tagList = reactive( [
     tag: '大数据',
     children: [
       {
-        id: 1,
-        tag: ''
+        id: 12,
+        tag: 'Hadoop'
       }
     ]
   },
@@ -372,8 +375,8 @@ const tagList = reactive( [
     tag: '前端',
     children: [
       {
-        id: 1,
-        tag: ''
+        id: 13,
+        tag: 'Angular'
       }
     ]
   },
@@ -382,8 +385,8 @@ const tagList = reactive( [
     tag: '后端',
     children: [
       {
-        id: 1,
-        tag: ''
+        id: 14,
+        tag: 'C++'
       }
     ]
   }
@@ -419,11 +422,12 @@ const addTag = (tag: BlogTypes.RestaurantItem) => {
 /**
  * 关闭指定标签
  */
-const handleTagClose = (id: number) => {
-  const index = hasSelectedTag.findIndex(item => item.id === id)
+const handleTagClose = (item: BlogTypes.RestaurantItem) => {
+  item.selected = false;
+  const index = article.tagIds.findIndex(id => id === item.id)
   if (index != -1) {
     hasSelectedTag.splice(index, 1)
-
+    article.tagIds.splice(index, 1)
   }
 }
 onMounted(() => {
@@ -564,7 +568,21 @@ onMounted(() => {
 .setting-item {
   position: relative;
   display: flex;
+  align-items: center;
   margin-top: 15px;
+
+  .el-button--small {
+    height: 15px;
+  }
+  .is-round {
+    padding: 0 5px;
+  }
+}
+
+.extract-btn {
+  position: absolute;
+  right: 195px;
+  bottom: 4px;
 }
 
 .setting-item-title {
@@ -633,6 +651,10 @@ onMounted(() => {
   background-color: #fff;
   padding: 0 30%;
   z-index: 2;
+}
+
+#addTagBtn {
+  margin-left: 5px;
 }
 </style>
 <style>
