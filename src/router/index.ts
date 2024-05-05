@@ -79,6 +79,23 @@ const router = createRouter({
       }
     },
     {
+      path: '/test',
+      name: 'test',
+      component: () => import('@/views/blog/TestEditor.vue'),
+      meta: {
+        title: 'test',
+        keepAlive: true,
+        requireAuth: true,
+        breadcrumb: [],
+        affix: true,
+        activeMenu: '/test',
+        icon: 'icon-about',
+        order: 2,
+        hidden: false,
+        dirty: true,
+      }
+    },
+    {
       path: '/tool/:groupName/:pageName',
       name: 'PageWrapper',
       component: () => import('@/views/tool/wrapper/ToolWrapper.vue')

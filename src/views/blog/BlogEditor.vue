@@ -11,8 +11,8 @@
         <el-avatar style="cursor: pointer" shape="square" :size="35" :src="'https://pic1.zhimg.com/v2-bd64c3ac8d203f791398c497f0752ee5_r.jpg?source=1940ef5c'" />
       </div>
     </div>
-    <div ref="divRef">
-      <div class="aie-container">
+    <div ref="divRef" class="aiEditor">
+      <div class="aie-container" >
         <!-- 头部功能区域 -->
         <div class="aie-header-panel">
           <div class="aie-container-header"></div>
@@ -64,7 +64,6 @@
                         :selected-tags="hasSelectedTag"
                     ></AddTagBox>
                   </transition>
-
                 </div>
               </div>
               <!-- 创作声明 -->
@@ -140,7 +139,7 @@
                 </el-radio-group>
               </div>
               <!-- 添加封面 -->
-              <div class="setting-item">
+              <div class="setting-item" style="margin-bottom: 15px;">
                 <label class="setting-item-title">添加封面</label>
                 <el-upload
                     class="avatar-uploader"
@@ -178,7 +177,6 @@ import LogoTitle from "@/components/nav/LogoTitle.vue";
 import type { BlogTypes } from "@/types/blog";
 import articleApi from "@/api/article";
 import AddTagBox from "@/components/box/AddTagBox.vue";
-import Vue from 'vue'
 
 const route = useRoute()
 const divRef = ref()
@@ -525,6 +523,7 @@ onMounted(() => {
     position: relative;
     width: 100%;
     max-width: 800px;
+    margin-bottom: 15px;
     background-color: #fff;
     text-align: center;
     //line-height: 56px;
@@ -680,4 +679,23 @@ onMounted(() => {
   height: 178px;
   text-align: center;
 }
+
+.aie-container aie-footer>div {
+  line-height: 50px;
+}
+
+.aiEditor {
+  * {
+    box-sizing: content-box;
+  }
+
+  .aie-dropdown-item {
+    h1, h2, h3, h4, h5, h6 {
+      padding: 0;
+      margin: 0;
+      border: none;
+    }
+  }
+}
+
 </style>
