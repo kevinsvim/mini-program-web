@@ -1,38 +1,46 @@
 <template>
-  <div class="editor">
+  <div style="padding: 0; margin: 0;">
     <!-- 顶部信息 -->
-    <div class="page-header">
+    <div class="page-header" id="title">
       <div class="header-left">
         <h1><LogoTitle :title="'Vault'"/></h1>
         <el-divider direction="vertical" style="height: 25px;"/>
         <span class="header-write">写文章</span>
       </div>
+      <div>
+        <el-button type="primary" @click="dark">切换主题</el-button>
+      </div>
       <div class="header-right">
         <el-avatar style="cursor: pointer" shape="square" :size="35" :src="'https://pic1.zhimg.com/v2-bd64c3ac8d203f791398c497f0752ee5_r.jpg?source=1940ef5c'" />
       </div>
     </div>
-    <div ref="divRef" class="aiEditor">
-      <div class="aie-container" >
-        <!-- 头部功能区域 -->
+    <!-- 文章区域 -->
+    <div id="aiEditor" ref="divRef" style="padding: 0;margin: 0">
+      <div class="aie-container">
+        <!-- 头部功能区 -->
         <div class="aie-header-panel">
           <div class="aie-container-header"></div>
         </div>
-        <!-- 内容区域 -->
+        <!-- 中间内容区 -->
         <div class="aie-main">
-          <div class="aie-directory-content">
+          <!-- 文档目录 -->
+          <div class="aie-directory-content" id="directory">
             <div class="aie-directory">
               <h5>文档目录</h5>
               <div id="outline">
               </div>
             </div>
           </div>
-          <div class="content">
+          <!-- 文章内容 -->
+          <div class="aie-container-panel aie-content">
             <div class="title">
-              <input title="title" v-model="article.title" placeholder="请输入标题（最多100字）"/>
+              <input v-model="article.title" placeholder="请输入标题（最多100字）"/>
+            </div>
+            <el-divider border-style="dashed" style="border-top: 1px solid var(--aie-container-border)"/>
+            <div class="aie-container-main">
             </div>
             <el-divider/>
-            <div class="aie-container-main"></div>
-            <el-divider/>
+
             <div class="aie-container-footer">
               <div class="setting">
                 <!-- 文章标签 -->
@@ -42,10 +50,6 @@
                     <svg-icon icon-name="icon-tip"></svg-icon>
                   </span>
                   </label>
-                  <!--<el-button plain size="small">-->
-                  <!--  <svg-icon icon-name="icon-add" size="12"></svg-icon>-->
-                  <!--  <span class="ml_4">添加文章标签</span>-->
-                  <!--</el-button>-->
                   <div class="flex gap-2">
                     <el-tag
                         v-for="item in hasSelectedTag"
@@ -53,12 +57,12 @@
                         closable
                         :disable-transitions="false"
                         size="default"
-                        style="margin-left: 5px"
+                        style="margin-right: 5px"
                         @close="() => handleTagClose(item)"
                     >
                       {{ item.tag }}
                     </el-tag>
-                    <el-button id="addTagBtn" class="button-new-tag" size="small" @click.stop="showInput">
+                    <el-button class="button-new-tag" size="small" @click.stop="showInput">
                       + 添加文章标签
                     </el-button>
                   </div>
@@ -104,7 +108,7 @@
                   <el-input
                       v-model="article.abstract"
                       maxlength="200"
-                      style="width: 540px"
+                      class="abstract-input"
                       placeholder="摘要：会在推荐、列表等场景外露，帮助读者快速了解内容，支持一键将正文前 200 字符键入摘要文本框"
                       show-word-limit
                       rows="3"
@@ -137,7 +141,7 @@
                 <div class="setting-item">
                   <label class="setting-item-title">可见范围
                     <span class="ml_4">
-                    <svg-icon icon-name="icon-tip"></svg-icon>
+                    <svg-icon icon-name="icon-tip" icon-style="icon-tip"></svg-icon>
                   </span>
                   </label>
                   <el-radio-group v-model="article.visibleRange">
@@ -167,7 +171,6 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
     <!-- 底部发布栏 -->
@@ -176,11 +179,13 @@
       <el-button type="primary" @click="handlePublish" :disabled="disabled.publishBtnDisabled">发布</el-button>
     </div>
   </div>
+
 </template>
+
 <script setup lang="ts">
 import { AiEditor } from "aieditor";
 import "aieditor/dist/style.css";
-import { onMounted, ref, onUnmounted, onBeforeUnmount, reactive, watch, unref } from "vue";
+import { onMounted, ref, onUnmounted, onBeforeUnmount, reactive, watch } from "vue";
 import { useRoute } from "vue-router";
 import SvgIcon from "@/components/icon/SvgIcon.vue";
 import LogoTitle from "@/components/nav/LogoTitle.vue";
@@ -232,21 +237,71 @@ const articleSetting = {
 const disabled = reactive({
   publishBtnDisabled: true,
 })
+const isDark = ref(true)
 onMounted(() => {
   window.addEventListener('beforeunload', beforeLeave)
   aiEditor = new AiEditor({
     element: divRef.value as Element,
     placeholder: "点击输入内容...",
     content: '',
+    theme: "light",
     onChange: (editor) => {
-      console.log(aiEditor?.getOutline());
+      updateOutLine(editor)
       hasUnsavedContent.value = editor.getText() !== '';
     },
+    onCreated:(editor)=>{
+      updateOutLine(editor)
+    },
   })
+  dark()
 })
 onUnmounted(() => {
   aiEditor && aiEditor.destroy()
 })
+/**
+ * 更新目录
+ * @param editor
+ */
+const updateOutLine = (editor: AiEditor) => {
+
+  const outlineContainer = document.querySelector("#outline");
+  while (outlineContainer?.firstChild){
+    outlineContainer.removeChild(outlineContainer.firstChild)
+  }
+
+  const outlines = editor.getOutline();
+  for (let outline of outlines) {
+    const child = document.createElement("div")
+    child.classList.add(`aie-title${outline.level}`)
+    child.style.marginLeft = `${14 * (outline.level - 1)}px`
+    child.innerHTML = `<a href="#${outline.id}">${outline.text}</a>`
+    child.addEventListener("click", (e) => {
+      e.preventDefault();
+      const el = editor.innerEditor.view.dom.querySelector(`#${outline.id}`) as HTMLElement;
+      el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+      setTimeout(()=>{
+        editor.focusPos(outline.pos + outline.size - 1)
+      },1000)
+    })
+    outlineContainer?.appendChild(child)
+  }
+}
+const dark = () => {
+  if (!isDark.value) {
+    document.body.style.background = "#1a1b1e"
+    document.querySelector("#title").style.color = "#eee"
+    document.querySelector("#directory").style.color = "#eee"
+    document.querySelector("#aiEditor").classList.remove("aie-theme-light");
+    document.querySelector("#aiEditor").classList.add("aie-theme-dark");
+  } else {
+    document.body.style.background = ""
+    document.querySelector("#title").style.color = ""
+    document.querySelector("#directory").style.color = ""
+    document.querySelector("#aiEditor").classList.remove("aie-theme-dark");
+    document.querySelector("#aiEditor").classList.add("aie-theme-light");
+  }
+  isDark.value = !isDark.value;
+}
 /**
  * 监听内容失去焦点
  */
@@ -439,32 +494,20 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
     article.tagIds.splice(index, 1)
   }
 }
-onMounted(() => {
-
-})
 
 </script>
 <style lang="scss">
-.editor {
-  background-color: #f3f4f6;
-  padding: 0;
-  margin: 0;
-}
-
 .page-header {
+  height: 50px;
+  line-height: 50px;
+  padding: 0 23%;
+  display: flex;
   position: sticky;
   top: 0;
-  display: flex;
-  align-items: center;
-  height: 51px;
-  padding: 0 23%;
-  background-color: #fff;
-  line-height: 51px;
-  border-bottom: 1px solid #efefef;
-  z-index: 2;
+  z-index: 98;
 
   .header-left {
-    flex: 1;
+    flex: 3;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -483,23 +526,33 @@ onMounted(() => {
   .header-right {
     flex: 1;
     display: flex;
+    align-items: center;
     justify-content: flex-end;
   }
 }
 
-.aie-header-panel {
-  position: sticky;
-  top: 51px;
-  z-index: 2;
+#directory * {
+  color: inherit;
 }
 
-.aie-container aie-header>div {
+.title {
+  width: 100%;
+  height: 40px;
+  max-width: 800px;
   border: none;
-}
-
-.aie-container aie-header {
-  display: flex;
-  align-items: center;
+  background-color: var(--aie-menus-bg-color);
+  input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 32px;
+    color: var(--aie-menus-tip-bg-color);
+    caret-color: var(--aie-text-color);
+    background-color: var(--aie-bg-color);
+    font-family: HarmonyOS_Sans_SC_Medium, sans-serif;
+    font-weight: 500;
+  }
 }
 
 .aie-container {
@@ -508,27 +561,17 @@ onMounted(() => {
   height: 100%;
   width: 100%;
   border: none;
-  background-color: #f3f4f6;
+  background: var(--aie-bg-color);
   margin-bottom: 50px;
-  &-header {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 56px;
-    text-align: center;
-    background-color: #fff;
-  }
 
   &-panel {
     width: calc(100% - 2rem - 2px);
     max-width: 800px;
     margin: 1rem auto;
-    border: 1px solid rgb(229 231 235);
-    background-color: #fff;
+    border: 1px solid var(--aie-container-border);
     height: 100%;
     min-height: 100vh;
     padding: 1rem;
-    z-index: 99;
   }
 
   &-main {
@@ -536,10 +579,8 @@ onMounted(() => {
     width: 100%;
     max-width: 800px;
     border: none;
-    background-color: #fff;
     height: 100%;
     min-height: 100vh;
-    z-index: 1 ;
   }
 
   &-footer {
@@ -547,43 +588,11 @@ onMounted(() => {
     width: 100%;
     max-width: 800px;
     margin-bottom: 15px;
-    background-color: #fff;
     text-align: center;
     //line-height: 56px;
     font-size: 14px;
     color: #a0a0a0;
     z-index: 1;
-  }
-}
-
-.content {
-  min-width: 867px;
-  width: 867px;
-  background-color: #fff;
-  max-width: 800px;
-  margin: 1rem auto 2rem;
-  border-radius: 5px;
-  padding: 20px;
-}
-
-.aie-content {
-  padding: 0;
-}
-
-.title {
-  width: 100%;
-  height: 40px;
-  max-width: 800px;
-  background-color: #fff;
-  border: none;
-  input {
-    width: 100%;
-    height: 100%;
-    border: none;
-    outline: none;
-    font-size: 32px;
-    font-family: HarmonyOS_Sans_SC_Medium, sans-serif;
-    font-weight: 500;
   }
 }
 
@@ -609,7 +618,6 @@ onMounted(() => {
 
 .setting-item-title {
   min-width: 0;
-  color: #373a40;
   margin: 0 3px 0 0;
   display: -webkit-box;
   display: -webkit-flex;
@@ -620,7 +628,20 @@ onMounted(() => {
   font-weight: 500;
   width: 110px;
   padding-left: 10px;
+  color: var(--aie-menus-tip-bg-color);
   font-family: HarmonyOS_Sans_SC_Medium, sans-serif;
+}
+
+.icon-tip {
+  width: 20px;
+  height: 20px;
+  vertical-align: -0.15em;
+  fill: var(--aie-menus-tip-bg-color);;
+  overflow: hidden;
+
+  &:hover {
+    fill: #00a1d6;
+  }
 }
 
 .avatar-uploader {
@@ -640,10 +661,6 @@ onMounted(() => {
 
 .el-upload__tip {
   margin-top: 0;
-}
-
-.ml_4 {
-  margin-left: 4px;
 }
 
 .source-link {
@@ -670,13 +687,23 @@ onMounted(() => {
   height: 50px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  background-color: #fff;
   padding: 0 30%;
-  z-index: 2;
 }
 
-#addTagBtn {
-  margin-left: 5px;
+.aie-header-panel {
+  position: sticky;
+  top: 50px;
+  z-index: 99;
+}
+
+.aie-header-panel aie-header>div {
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.aie-container aie-header>div {
+  border-top: 1px solid var(--aie-container-border);
 }
 
 .aie-main {
@@ -689,7 +716,6 @@ onMounted(() => {
   left: 10px;
   width: 260px;
   z-index: 0;
-
 }
 
 .aie-directory h5 {
@@ -747,8 +773,23 @@ onMounted(() => {
     width: 200px;
   }
 }
-</style>
 
+.abstract-input {
+  width: 540px;
+}
+
+@media screen and (max-width: 700px) {
+  .abstract-input {
+    width: 440px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .abstract-input {
+    width: 330px;
+  }
+}
+</style>
 <style>
 .avatar-uploader .el-upload {
   border: 1px dashed var(--el-border-color);

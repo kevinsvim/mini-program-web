@@ -4,3 +4,4 @@
 
  icon-pwd-hide
  icon-pwd-show
+ icon-tip

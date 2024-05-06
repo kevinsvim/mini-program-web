@@ -13,7 +13,7 @@
     </div>
     <!-- 文章区域 -->
     <div ref="divRef" style="padding: 0;margin: 0">
-      <div class="aie-container" style="background-color: #f3f4f6">
+      <div class="aie-container">
         <!-- 头部功能区 -->
         <div class="aie-header-panel">
           <div class="aie-container-header" style="background: #fff;"></div>
@@ -47,10 +47,6 @@
                     <svg-icon icon-name="icon-tip"></svg-icon>
                   </span>
                   </label>
-                  <!--<el-button plain size="small">-->
-                  <!--  <svg-icon icon-name="icon-add" size="12"></svg-icon>-->
-                  <!--  <span class="ml_4">添加文章标签</span>-->
-                  <!--</el-button>-->
                   <div class="flex gap-2">
                     <el-tag
                         v-for="item in hasSelectedTag"
@@ -58,12 +54,12 @@
                         closable
                         :disable-transitions="false"
                         size="default"
-                        style="margin-left: 5px"
+                        style="margin-right: 5px"
                         @close="() => handleTagClose(item)"
                     >
                       {{ item.tag }}
                     </el-tag>
-                    <el-button id="addTagBtn" class="button-new-tag" size="small" @click.stop="showInput">
+                    <el-button class="button-new-tag" size="small" @click.stop="showInput">
                       + 添加文章标签
                     </el-button>
                   </div>
@@ -109,7 +105,7 @@
                   <el-input
                       v-model="article.abstract"
                       maxlength="200"
-                      style="width: 540px"
+                      class="abstract-input"
                       placeholder="摘要：会在推荐、列表等场景外露，帮助读者快速了解内容，支持一键将正文前 200 字符键入摘要文本框"
                       show-word-limit
                       rows="3"
@@ -172,12 +168,12 @@
             </div>
           </div>
         </div>
-        <!-- 底部发布栏 -->
-        <div class="publish-footer">
-          <el-button plain>预览</el-button>
-          <el-button type="primary" @click="handlePublish" :disabled="disabled.publishBtnDisabled">发布</el-button>
-        </div>
       </div>
+    </div>
+    <!-- 底部发布栏 -->
+    <div class="publish-footer">
+      <el-button plain>预览</el-button>
+      <el-button type="primary" @click="handlePublish" :disabled="disabled.publishBtnDisabled">发布</el-button>
     </div>
   </div>
 
@@ -186,7 +182,7 @@
 <script setup lang="ts">
 import { AiEditor } from "aieditor";
 import "aieditor/dist/style.css";
-import { onMounted, ref, onUnmounted, onBeforeUnmount, reactive, watch, unref } from "vue";
+import { onMounted, ref, onUnmounted, onBeforeUnmount, reactive, watch } from "vue";
 import { useRoute } from "vue-router";
 import SvgIcon from "@/components/icon/SvgIcon.vue";
 import LogoTitle from "@/components/nav/LogoTitle.vue";
@@ -245,14 +241,45 @@ onMounted(() => {
     placeholder: "点击输入内容...",
     content: '',
     onChange: (editor) => {
-      console.log(aiEditor?.getText());
+      updateOutLine(editor)
       hasUnsavedContent.value = editor.getText() !== '';
+    },
+    onCreated:(editor)=>{
+      updateOutLine(editor)
     },
   })
 })
 onUnmounted(() => {
   aiEditor && aiEditor.destroy()
 })
+/**
+ * 更新目录
+ * @param editor
+ */
+const updateOutLine = (editor: AiEditor) => {
+
+  const outlineContainer = document.querySelector("#outline");
+  while (outlineContainer?.firstChild){
+    outlineContainer.removeChild(outlineContainer.firstChild)
+  }
+
+  const outlines = editor.getOutline();
+  for (let outline of outlines) {
+    const child = document.createElement("div")
+    child.classList.add(`aie-title${outline.level}`)
+    child.style.marginLeft = `${14 * (outline.level - 1)}px`
+    child.innerHTML = `<a href="#${outline.id}">${outline.text}</a>`
+    child.addEventListener("click", (e) => {
+      e.preventDefault();
+      const el = editor.innerEditor.view.dom.querySelector(`#${outline.id}`) as HTMLElement;
+      el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+      setTimeout(()=>{
+        editor.focusPos(outline.pos + outline.size - 1)
+      },1000)
+    })
+    outlineContainer?.appendChild(child)
+  }
+}
 /**
  * 监听内容失去焦点
  */
@@ -445,9 +472,6 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
     article.tagIds.splice(index, 1)
   }
 }
-onMounted(() => {
-
-})
 
 </script>
 <style lang="scss">
@@ -460,7 +484,7 @@ onMounted(() => {
   position: sticky;
   border-bottom: 1px solid #efefef;
   top: 0;
-  z-index: 1;
+  z-index: 98;
 
   .header-left {
     flex: 3;
@@ -629,17 +653,12 @@ onMounted(() => {
   border-top-right-radius: 10px;
   background-color: #fff;
   padding: 0 30%;
-  z-index: 2;
-}
-
-#addTagBtn {
-  margin-left: 5px;
 }
 
 .aie-header-panel {
   position: sticky;
-  top: 51px;
-  z-index: 1;
+  top: 50px;
+  z-index: 99;
 }
 
 .aie-header-panel aie-header > div {
@@ -717,6 +736,22 @@ onMounted(() => {
 @media screen and (max-width: 1400px) {
   .aie-directory {
     width: 200px;
+  }
+}
+
+.abstract-input {
+  width: 540px;
+}
+
+@media screen and (max-width: 700px) {
+  .abstract-input {
+    width: 440px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .abstract-input {
+    width: 330px;
   }
 }
 </style>
