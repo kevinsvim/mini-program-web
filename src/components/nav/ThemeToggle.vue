@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-switch v-model="isDark" @click="toggleTheme" id="btn" style="--el-switch-on-color: #2c2c2c;">
+    <el-switch v-model="isDark" @click="toggleDark" id="btn" style="--el-switch-on-color: #2c2c2c;">
       <template #active-action>
         <span >
           <svg-icon icon-name="icon-moon"></svg-icon>
@@ -18,7 +18,10 @@
 import SvgIcon from '@/components/icon/SvgIcon.vue'
 import { useThemeStore } from "@/stores/modules/themeStore";
 import { ref } from 'vue'
+import { useDark, useToggle } from '@vueuse/core'
 
+const isDark2 = useDark()
+const toggleDark = useToggle(isDark2)
 const themeStore = useThemeStore()
 const isDark = ref(false)
 

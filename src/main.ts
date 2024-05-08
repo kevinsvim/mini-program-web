@@ -10,6 +10,9 @@ import '@/assets/iconfont/iconfont.js'
 import '@/assets/font/font.scss'
 // import  { ClickOutSide } from "@/directives/clickOutsideDirective";
 import { ClickOutside } from 'element-plus'
+import 'element-plus/theme-chalk/dark/css-vars.css'
+import '@/styles/dark/css-vars.css'
+
 const app = createApp(App)
 
 app.use(router)

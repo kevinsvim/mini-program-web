@@ -1,21 +1,31 @@
 <template>
-  <div style="padding: 0; margin: 0;">
+  <div style="padding: 0; margin: 0">
     <!-- 顶部信息 -->
-    <div class="page-header" id="title">
+    <div
+      class="page-header"
+      :style="{ color: colorSetting.titleColor, background: colorSetting.titleBgColor }"
+    >
       <div class="header-left">
-        <h1><LogoTitle :title="'Vault'"/></h1>
-        <el-divider direction="vertical" style="height: 25px;"/>
+        <h1>
+          <LogoTitle :title="'Vault'" />
+        </h1>
+        <el-divider direction="vertical" style="height: 25px" />
         <span class="header-write">写文章</span>
       </div>
       <div>
         <el-button type="primary" @click="dark">切换主题</el-button>
       </div>
       <div class="header-right">
-        <el-avatar style="cursor: pointer" shape="square" :size="35" :src="'https://pic1.zhimg.com/v2-bd64c3ac8d203f791398c497f0752ee5_r.jpg?source=1940ef5c'" />
+        <el-avatar
+          style="cursor: pointer"
+          shape="square"
+          :size="35"
+          :src="'https://pic1.zhimg.com/v2-bd64c3ac8d203f791398c497f0752ee5_r.jpg?source=1940ef5c'"
+        />
       </div>
     </div>
     <!-- 文章区域 -->
-    <div id="aiEditor" ref="divRef" style="padding: 0;margin: 0">
+    <div id="aiEditor" ref="divRef" style="padding: 0; margin: 0" :class="colorSetting.themeClass">
       <div class="aie-container">
         <!-- 头部功能区 -->
         <div class="aie-header-panel">
@@ -25,40 +35,45 @@
         <div class="aie-main">
           <!-- 文档目录 -->
           <div class="aie-directory-content" id="directory">
-            <div class="aie-directory">
+            <div class="aie-directory" :style="{ color: colorSetting.outlineColor }">
               <h5>文档目录</h5>
-              <div id="outline">
-              </div>
+              <div id="outline"></div>
             </div>
           </div>
           <!-- 文章内容 -->
           <div class="aie-container-panel aie-content">
             <div class="title">
-              <input v-model="article.title" placeholder="请输入标题（最多100字）"/>
+              <input v-model="article.title" placeholder="请输入标题（最多100字）" />
             </div>
-            <el-divider border-style="dashed" style="border-top: 1px solid var(--aie-container-border)"/>
-            <div class="aie-container-main">
-            </div>
-            <el-divider/>
+            <el-divider
+              border-style="dashed"
+              style="border-top: 1px solid var(--aie-container-border)"
+            />
+            <div class="aie-container-main"></div>
+            <el-divider
+              border-style="dashed"
+              style="border-top: 1px solid var(--aie-container-border)"
+            />
 
             <div class="aie-container-footer">
               <div class="setting">
                 <!-- 文章标签 -->
                 <div class="setting-item">
-                  <label class="setting-item-title">文章标签
+                  <label class="setting-item-title"
+                    >文章标签
                     <span class="ml_4">
-                    <svg-icon icon-name="icon-tip"></svg-icon>
-                  </span>
+                      <svg-icon icon-name="icon-tip"></svg-icon>
+                    </span>
                   </label>
                   <div class="flex gap-2">
                     <el-tag
-                        v-for="item in hasSelectedTag"
-                        :key="item.id"
-                        closable
-                        :disable-transitions="false"
-                        size="default"
-                        style="margin-right: 5px"
-                        @close="() => handleTagClose(item)"
+                      v-for="item in hasSelectedTag"
+                      :key="item.id"
+                      closable
+                      :disable-transitions="false"
+                      size="default"
+                      style="margin-right: 5px"
+                      @close="() => handleTagClose(item)"
                     >
                       {{ item.tag }}
                     </el-tag>
@@ -69,101 +84,117 @@
                   <div style="position: absolute; top: 45px; left: 123px; z-index: 99">
                     <transition name="el-zoom-in-top">
                       <AddTagBox
-                          v-show="isShowTagBox"
-                          v-click-outside="handleClickOutside"
-                          :tag-list="tagList"
-                          @add-tag="addTag"
-                          :selected-tags="hasSelectedTag"
+                        v-show="isShowTagBox"
+                        v-click-outside="handleClickOutside"
+                        :tag-list="tagList"
+                        @add-tag="addTag"
+                        :selected-tags="hasSelectedTag"
                       ></AddTagBox>
                     </transition>
                   </div>
                 </div>
                 <!-- 创作声明 -->
                 <div class="setting-item">
-                  <label class="setting-item-title">创作声明
+                  <label class="setting-item-title"
+                    >创作声明
                     <span class="ml_4">
-                    <svg-icon icon-name="icon-tip"></svg-icon>
-                  </span>
+                      <svg-icon icon-name="icon-tip"></svg-icon>
+                    </span>
                   </label>
                   <el-select
-                      v-model="article.statement"
-                      clearable
-                      placeholder="Select"
-                      style="width: 240px">
+                    v-model="article.statement"
+                    clearable
+                    placeholder="Select"
+                    style="width: 240px;"
+                    class="custom-select"
+                  >
                     <el-option
-                        v-for="item in articleSetting.statements"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                      v-for="item in articleSetting.statements"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
                     />
                   </el-select>
                 </div>
                 <!-- 分类专栏 -->
                 <div class="setting-item">
-                  <label class="setting-item-title">内容摘要
+                  <label class="setting-item-title"
+                    >内容摘要
                     <span class="ml_4">
-                    <svg-icon icon-name="icon-tip"></svg-icon>
-                  </span>
+                      <svg-icon icon-name="icon-tip"></svg-icon>
+                    </span>
                   </label>
                   <el-input
-                      v-model="article.abstract"
-                      maxlength="200"
-                      class="abstract-input"
-                      placeholder="摘要：会在推荐、列表等场景外露，帮助读者快速了解内容，支持一键将正文前 200 字符键入摘要文本框"
-                      show-word-limit
-                      rows="3"
-                      type="textarea"
+                    v-model="article.abstract"
+                    maxlength="200"
+                    class="abstract-input"
+                    placeholder="摘要：会在推荐、列表等场景外露，帮助读者快速了解内容，支持一键将正文前 200 字符键入摘要文本框"
+                    show-word-limit
+                    input-style="background-color: var(--aie-container-bg); color: var(--aie-text-color);"
+                    rows="3"
+                    type="textarea"
                   />
                   <el-button size="small" round class="extract-btn">
-                    <span style="font-size: 11px;">快速提取</span>
+                    <span style="font-size: 11px">快速提取</span>
                   </el-button>
                 </div>
                 <!-- 文章类型 -->
                 <div class="setting-item">
-                  <label class="setting-item-title">文章类型
+                  <label class="setting-item-title"
+                    >文章类型
                     <span class="ml_4">
-                    <svg-icon icon-name="icon-tip"></svg-icon>
-                  </span>
+                      <svg-icon icon-name="icon-tip"></svg-icon>
+                    </span>
                   </label>
                   <el-radio-group v-model="article.type">
-                    <el-radio :label="1">原创</el-radio>
-                    <el-radio :label="2">转载</el-radio>
-                    <el-radio :label="3">翻译</el-radio>
+                    <el-radio :label="1" class="theme-text">原创</el-radio>
+                    <el-radio :label="2" class="theme-text">转载</el-radio>
+                    <el-radio :label="3" class="theme-text">翻译</el-radio>
                   </el-radio-group>
                 </div>
                 <!-- 原文链接 -->
                 <div class="source-link" v-if="article.type !== 1">
-                  <input type="text" v-model="article.copyFrom" placeholder="请输入原文链接"/>
-                  <el-checkbox v-if="article.type == 2" v-model="article.isAuthorized" :label="articleSetting.reprinted" size="large" />
-                  <el-checkbox v-if="article.type == 3" v-model="article.isAuthorized" :label="articleSetting.translation" size="large"/>
+                  <input type="text" v-model="article.copyFrom" placeholder="请输入原文链接" style="background-color: var(--aie-container-bg); color: var(--aie-text-color);"/>
+                  <el-checkbox
+                    v-if="article.type == 2"
+                    v-model="article.isAuthorized"
+                    :label="articleSetting.reprinted"
+                    size="large"
+                  />
+                  <el-checkbox
+                    v-if="article.type == 3"
+                    v-model="article.isAuthorized"
+                    :label="articleSetting.translation"
+                    size="large"
+                  />
                 </div>
                 <!-- 可见范围 -->
                 <div class="setting-item">
-                  <label class="setting-item-title">可见范围
+                  <label class="setting-item-title"
+                    >可见范围
                     <span class="ml_4">
-                    <svg-icon icon-name="icon-tip" icon-style="icon-tip"></svg-icon>
-                  </span>
+                      <svg-icon icon-name="icon-tip" icon-style="icon-tip"></svg-icon>
+                    </span>
                   </label>
                   <el-radio-group v-model="article.visibleRange">
-                    <el-radio :label="1">全部可见</el-radio>
-                    <el-radio :label="2">粉丝可见</el-radio>
-                    <el-radio :label="3">仅我可见</el-radio>
+                    <el-radio :label="1" class="theme-text">全部可见</el-radio>
+                    <el-radio :label="2" class="theme-text">粉丝可见</el-radio>
+                    <el-radio :label="3" class="theme-text">仅我可见</el-radio>
                   </el-radio-group>
                 </div>
                 <!-- 添加封面 -->
-                <div class="setting-item" style="margin-bottom: 15px;">
+                <div class="setting-item" style="margin-bottom: 15px">
                   <label class="setting-item-title">添加封面</label>
                   <el-upload
-                      class="avatar-uploader"
-                      action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                      :show-file-list="false">
-                    <img v-if="article.cover" :src="article.cover" class="avatar"  alt=""/>
+                    class="avatar-uploader"
+                    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+                    :show-file-list="false"
+                  >
+                    <img v-if="article.cover" :src="article.cover" class="avatar" alt="" />
                     <svg-icon v-else icon-name="icon-add" size="14"></svg-icon>
                     <span style="margin-left: 5px">添加文章封面</span>
                     <template #tip>
-                      <div class="el-upload__tip">
-                        图片支持jpg/png，大小少于500KB.
-                      </div>
+                      <div class="el-upload__tip">图片支持jpg/png，大小少于500KB.</div>
                     </template>
                   </el-upload>
                 </div>
@@ -174,24 +205,25 @@
       </div>
     </div>
     <!-- 底部发布栏 -->
-    <div class="publish-footer">
+    <div class="publish-footer" :style="{ backgroundColor: colorSetting.bottomBgColor, borderTop: colorSetting.bottomBrColor }">
       <el-button plain>预览</el-button>
-      <el-button type="primary" @click="handlePublish" :disabled="disabled.publishBtnDisabled">发布</el-button>
+      <el-button type="primary" @click="handlePublish" :disabled="disabled.publishBtnDisabled"
+        >发布</el-button
+      >
     </div>
   </div>
-
 </template>
 
 <script setup lang="ts">
-import { AiEditor } from "aieditor";
-import "aieditor/dist/style.css";
-import { onMounted, ref, onUnmounted, onBeforeUnmount, reactive, watch } from "vue";
-import { useRoute } from "vue-router";
-import SvgIcon from "@/components/icon/SvgIcon.vue";
-import LogoTitle from "@/components/nav/LogoTitle.vue";
-import type { BlogTypes } from "@/types/blog";
-import articleApi from "@/api/article";
-import AddTagBox from "@/components/box/AddTagBox.vue";
+import { AiEditor } from 'aieditor'
+import 'aieditor/dist/style.css'
+import { onMounted, ref, onUnmounted, onBeforeUnmount, reactive, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import SvgIcon from '@/components/icon/SvgIcon.vue'
+import LogoTitle from '@/components/nav/LogoTitle.vue'
+import type { BlogTypes } from '@/types/blog'
+import articleApi from '@/api/article'
+import AddTagBox from '@/components/box/AddTagBox.vue'
 
 const route = useRoute()
 const divRef = ref()
@@ -209,7 +241,7 @@ const article = reactive<BlogTypes.ArticleType>({
   copyFrom: '',
   abstract: '',
   // 是否授权文章（转载或翻译）
-  isAuthorized : false,
+  isAuthorized: false,
   // 可见范围(1-全部可见，2-粉丝可见，3-仅我可见)
   visibleRange: 1,
   // 文章标签
@@ -222,36 +254,36 @@ const articleSetting = {
   statements: [
     {
       value: 0,
-      label: '无声明',
+      label: '无声明'
     },
     {
       value: 1,
-      label: 'Option2',
+      label: 'Option2'
     },
     {
       value: 2,
-      label: 'Option3',
-    },
-  ],
+      label: 'Option3'
+    }
+  ]
 }
 const disabled = reactive({
-  publishBtnDisabled: true,
+  publishBtnDisabled: true
 })
 const isDark = ref(true)
 onMounted(() => {
   window.addEventListener('beforeunload', beforeLeave)
   aiEditor = new AiEditor({
     element: divRef.value as Element,
-    placeholder: "点击输入内容...",
+    placeholder: '点击输入内容...',
     content: '',
-    theme: "light",
+    theme: 'light',
     onChange: (editor) => {
       updateOutLine(editor)
-      hasUnsavedContent.value = editor.getText() !== '';
+      hasUnsavedContent.value = editor.getText() !== ''
     },
-    onCreated:(editor)=>{
+    onCreated: (editor) => {
       updateOutLine(editor)
-    },
+    }
   })
   dark()
 })
@@ -260,54 +292,65 @@ onUnmounted(() => {
 })
 /**
  * 更新目录
- * @param editor
  */
 const updateOutLine = (editor: AiEditor) => {
-
-  const outlineContainer = document.querySelector("#outline");
-  while (outlineContainer?.firstChild){
+  const outlineContainer = document.querySelector('#outline')
+  while (outlineContainer?.firstChild) {
     outlineContainer.removeChild(outlineContainer.firstChild)
   }
 
-  const outlines = editor.getOutline();
+  const outlines = editor.getOutline()
   for (let outline of outlines) {
-    const child = document.createElement("div")
+    const child = document.createElement('div')
     child.classList.add(`aie-title${outline.level}`)
     child.style.marginLeft = `${14 * (outline.level - 1)}px`
     child.innerHTML = `<a href="#${outline.id}">${outline.text}</a>`
-    child.addEventListener("click", (e) => {
-      e.preventDefault();
-      const el = editor.innerEditor.view.dom.querySelector(`#${outline.id}`) as HTMLElement;
-      el.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
-      setTimeout(()=>{
+    child.addEventListener('click', (e) => {
+      e.preventDefault()
+      const el = editor.innerEditor.view.dom.querySelector(`#${outline.id}`) as HTMLElement
+      el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+      setTimeout(() => {
         editor.focusPos(outline.pos + outline.size - 1)
-      },1000)
+      }, 1000)
     })
     outlineContainer?.appendChild(child)
   }
 }
+/**
+ * 配置主题
+ */
+const colorSetting = reactive({
+  titleColor: '',
+  titleBgColor: '#fff',
+  outlineColor: '',
+  themeClass: 'aie-theme-light',
+  bottomBgColor: '#fff',
+  bottomBrColor: '1px solid #eee'
+})
 const dark = () => {
-  if (!isDark.value) {
-    document.body.style.background = "#1a1b1e"
-    document.querySelector("#title").style.color = "#eee"
-    document.querySelector("#directory").style.color = "#eee"
-    document.querySelector("#aiEditor").classList.remove("aie-theme-light");
-    document.querySelector("#aiEditor").classList.add("aie-theme-dark");
+  isDark.value = !isDark.value
+  if (isDark.value) {
+    colorSetting.titleColor = '#eee'
+    colorSetting.titleBgColor = '#1a1b1e'
+    colorSetting.outlineColor = '#eee'
+    colorSetting.themeClass = 'aie-theme-dark'
+    colorSetting.bottomBgColor = '#1a1b1e'
+    colorSetting.bottomBrColor = '1px solid #3c3c3c'
   } else {
-    document.body.style.background = ""
-    document.querySelector("#title").style.color = ""
-    document.querySelector("#directory").style.color = ""
-    document.querySelector("#aiEditor").classList.remove("aie-theme-dark");
-    document.querySelector("#aiEditor").classList.add("aie-theme-light");
+    colorSetting.titleColor = ''
+    colorSetting.titleBgColor = '#fff'
+    colorSetting.outlineColor = ''
+    colorSetting.themeClass = 'aie-theme-light'
+    colorSetting.bottomBgColor = '#fff'
+    colorSetting.bottomBrColor = '1px solid #eee'
   }
-  isDark.value = !isDark.value;
 }
 /**
  * 监听内容失去焦点
  */
 watch([() => hasUnsavedContent.value, () => article.title], () => {
   // 存在内容
-  disabled.publishBtnDisabled = !(hasUnsavedContent.value && article.title !== '');
+  disabled.publishBtnDisabled = !(hasUnsavedContent.value && article.title !== '')
 })
 /**
  * 处理文章发布
@@ -315,11 +358,14 @@ watch([() => hasUnsavedContent.value, () => article.title], () => {
 const handlePublish = () => {
   // 检测是否满足发布条件
   if (article.title !== '' && aiEditor?.getText() !== '') {
-    articleApi.saveArticle(article).then(res => {
-      console.log(res)
-    }).catch(error => {
-      console.log(error)
-    })
+    articleApi
+      .saveArticle(article)
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   } else {
     // 提示不存在发布条件
     alert('请保证你已经填写了标题和内容')
@@ -343,7 +389,7 @@ onBeforeUnmount(() => {
  */
 // 是否显示box弹窗
 const isShowTagBox = ref(false)
-const tagList = reactive( [
+const tagList = reactive([
   {
     id: 1,
     tag: '推荐',
@@ -458,7 +504,7 @@ const tagList = reactive( [
 
 const loadAll = () => {
   tagList?.forEach((item) => {
-    item.children.forEach(child => {
+    item.children.forEach((child) => {
       Object.assign(child, 'selected', false)
     })
   })
@@ -471,8 +517,8 @@ const showInput = () => {
 }
 // 避免点击按钮弹框无法打开
 const handleClickOutside = (event: Event) => {
-  const target = (event.target as HTMLElement)
-  const el = document.getElementById("addTagBtn")
+  const target = event.target as HTMLElement
+  const el = document.getElementById('addTagBtn')
   if (!el?.contains(target)) {
     isShowTagBox.value = false
   }
@@ -487,22 +533,21 @@ const addTag = (tag: BlogTypes.RestaurantItem) => {
  * 关闭指定标签
  */
 const handleTagClose = (item: BlogTypes.RestaurantItem) => {
-  item.selected = false;
-  const index = article.tagIds.findIndex(id => id === item.id)
+  item.selected = false
+  const index = article.tagIds.findIndex((id) => id === item.id)
   if (index != -1) {
     hasSelectedTag.splice(index, 1)
     article.tagIds.splice(index, 1)
   }
 }
-
 </script>
 <style lang="scss">
 .page-header {
+  position: sticky;
+  display: flex;
   height: 50px;
   line-height: 50px;
   padding: 0 23%;
-  display: flex;
-  position: sticky;
   top: 0;
   z-index: 98;
 
@@ -511,6 +556,7 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
     display: flex;
     align-items: center;
     justify-content: flex-start;
+
     > h1 {
       padding-right: 10px;
     }
@@ -535,12 +581,17 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
   color: inherit;
 }
 
+.theme-text {
+  color: var(--aie-text-color);
+}
+
 .title {
   width: 100%;
   height: 40px;
   max-width: 800px;
   border: none;
   background-color: var(--aie-menus-bg-color);
+
   input {
     width: 100%;
     height: 100%;
@@ -605,6 +656,7 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
   .el-button--small {
     height: 15px;
   }
+
   .is-round {
     padding: 0 5px;
   }
@@ -636,7 +688,7 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
   width: 20px;
   height: 20px;
   vertical-align: -0.15em;
-  fill: var(--aie-menus-tip-bg-color);;
+  fill: var(--aie-menus-tip-bg-color);
   overflow: hidden;
 
   &:hover {
@@ -666,6 +718,7 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
 .source-link {
   text-align: left;
   margin-left: 120px;
+
   input {
     display: block;
     width: 100%;
@@ -685,9 +738,8 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
   left: 0;
   width: 100%;
   height: 50px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   padding: 0 30%;
+  z-index: 97;
 }
 
 .aie-header-panel {
@@ -696,18 +748,23 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
   z-index: 99;
 }
 
-.aie-header-panel aie-header>div {
+.aie-header-panel aie-header > div {
   align-items: center;
   justify-content: center;
   padding: 10px 0;
 }
 
-.aie-container aie-header>div {
+.aie-container aie-header > div {
   border-top: 1px solid var(--aie-container-border);
+  background-color: var(--aie-bg-color);
 }
 
 .aie-main {
   position: relative;
+}
+
+:deep(.el-select__wrapper) {
+  background-color: black !important;
 }
 
 .aie-directory {
@@ -753,7 +810,11 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
   font-weight: 500;
 }
 
-.aie-title2, .aie-title3, .aie-title4, .aie-title5, .aie-title6 {
+.aie-title2,
+.aie-title3,
+.aie-title4,
+.aie-title5,
+.aie-title6 {
   font-size: 12px;
 }
 
@@ -806,7 +867,7 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
   border-color: var(--el-color-primary);
 }
 
-.aie-container aie-footer>div {
+.aie-container aie-footer > div {
   line-height: 50px;
 }
 </style>
