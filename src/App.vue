@@ -13,6 +13,7 @@
   display: none;
 }
 body {
-  @include background_color('nav-bg-color');
+  //@include background_color('nav-bg-color');
+  background-color: var(--el-bg-color-page);
 }
 </style>

@@ -1,3 +1,6 @@
+:root {
+    --el-bg-color-page2: skyblue;
+}
 html.dark {
-
+    --el-bg-color-page2: #0a0a0a;
 }
