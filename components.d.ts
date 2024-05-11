@@ -42,6 +42,7 @@ declare module 'vue' {
     SearchNavbar: typeof import('./src/components/common/SearchNavbar.vue')['default']
     SliderCaptcha: typeof import('./src/components/canvas/SliderCaptcha.vue')['default']
     SvgIcon: typeof import('./src/components/icon/SvgIcon.vue')['default']
+    ThemeSwitch: typeof import('./src/components/common/switch/ThemeSwitch.vue')['default']
     ThemeToggle: typeof import('./src/components/nav/ThemeToggle.vue')['default']
     ToolCard: typeof import('./src/components/card/ToolCard.vue')['default']
     TopicCard: typeof import('./src/components/card/TopicCard.vue')['default']

@@ -1,83 +1,88 @@
 <template>
   <div>
-    <el-switch  @click="toggleTheme" id="btn" style="--el-switch-on-color: #2c2c2c;">
-      <template #active-action>
-        <span >
+    <el-button color="#626aef" :dark="isDark" @click="updateView">
+      <template #icon>
+        <span v-if="isDark">
           <svg-icon icon-name="icon-moon"></svg-icon>
         </span>
-      </template>
-      <template #inactive-action>
-        <span>
+        <span v-else>
           <svg-icon icon-name="icon-sun"></svg-icon>
         </span>
       </template>
-    </el-switch>
-    <!--<el-button @click="toggleDark" size="small" type="primary">切换主题</el-button>-->
-    <span @click.stop="toggleDark()">暗黑模式</span>
-    <el-switch size="small" v-model="isDark" />
+    </el-button>
   </div>
 </template>
 <script setup lang="ts">
-import SvgIcon from '@/components/icon/SvgIcon.vue'
-import { useThemeStore } from "@/stores/modules/themeStore";
-import { ref } from 'vue'
 import { useDark, useToggle } from '@vueuse/core'
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
-// const themeStore = useThemeStore()
-// const isDark = ref(false)
-
-// 初始化主题
-// isDark.value = themeStore.initializeTheme() == 'dark'
-
-const toggleTheme = (ev: PointerEvent) => {
-  // 获取圆心位置
-  document.documentElement.style.setProperty('--x', ev.clientX + 'px')
-  document.documentElement.style.setProperty('--y', ev.clientY + 'px')
-  // 处理兼容性
-  if (document.startViewTransition) {
-    document.startViewTransition(() => {
-      // themeStore.toggleTheme(isDark.value ? 'dark' : 'light')
-      toggleDark()
-    })
-  } else {
+function updateView(event: MouseEvent) {
+  //在不支持的浏览器里不做动画
+  if (!document.startViewTransition) {
     toggleDark()
+    return
   }
+  // 开始一次视图过渡：
+  const transition = document.startViewTransition(() => toggleDark())
+  transition.ready.then(() => {
+    const x = event.clientX
+    const y = event.clientY
+    //计算按钮到最远点的距离用作裁剪圆形的半径
+    const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
+    const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`]
+    //开始动画
+    document.documentElement.animate(
+      {
+        clipPath: isDark.value ? [...clipPath].reverse() : clipPath
+      },
+      {
+        duration: 400,
+        easing: 'ease-in',
+        pseudoElement: isDark.value ? '::view-transition-old(root)' : '::view-transition-new(root)'
+      }
+    )
+  })
 }
 </script>
 <style lang="scss">
-@import "@/styles/theme/handle";
-#btn{
-  padding: 5px 16px;
-  background-color: transparent;
-  border-radius: 8px;
-  line-height: 1.4;
-  cursor: pointer;
-  transition: .3s;
-  transform: scale(1);
-  border-color: transparent;
-  color: #fff;
-  text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
-  box-shadow: 0 2px #0000000b;
+@import '@/styles/theme/handle';
+
+@keyframes clip {
+  0% {
+    clip-path: circle(0 at 200px 50px);
+  }
+  100% {
+    clip-path: circle(200% at 200px 50px);
+  }
 }
-::view-transition-old(*) {
+
+.el-switch__core .el-switch__action {
+  @include background_color('switch-btn-color');
+}
+
+/* Alternative custom animation style */
+::view-transition-old(root),
+::view-transition-new(root) {
+  height: auto;
+  width: 100vw;
   animation: none;
   mix-blend-mode: normal;
 }
-::view-transition-new(*) {
-  mix-blend-mode: normal;
-  animation: clip 0.4s ease-in;
+
+html.dark::view-transition-old(root) {
+  z-index: 2147483646;
 }
-@keyframes clip {
-  from {
-    clip-path: circle(0% at var(--x) var(--y));
-  }
-  to{
-    clip-path: circle(100% at var(--x) var(--y));
-  }
+
+html.dark::view-transition-new(root) {
+  z-index: 1;
 }
-.el-switch__core .el-switch__action {
-  @include background_color('switch-btn-color')
+
+html::view-transition-old(root) {
+  z-index: 1;
+}
+
+html::view-transition-new(root) {
+  z-index: 2147483646;
 }
 </style>
