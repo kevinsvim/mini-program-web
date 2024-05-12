@@ -21,7 +21,7 @@
       </div>
       <!-- 搜索图标 -->
       <div class="nav-search-btn" @click.stop="handleSearch">
-        <svg-icon icon-name="icon-search" size="19"></svg-icon>
+        <svg-icon icon-name="icon-search" class="icon-search" size="19"></svg-icon>
       </div>
     </form>
     <!-- 搜索面板列表 -->
@@ -39,6 +39,7 @@
               <button-clear
                 v-for="(item, index) in searchHistory"
                 :key="index"
+                class="button-clear"
                 :search-content="item"
                 @removeSpecifiedRecord="() => removeSpecifiedRecord(item)"
               ></button-clear>
@@ -70,15 +71,15 @@
         <div class="trending-content">
           <div class="trending-col" style="max-width: 244px">
             <div class="trending-item" tabindex="0">
-              <div class="trending-rank search-rank-top">1</div>
+              <div class="trending-rank">1</div>
               <div class="trending-text">幻兽帕鲁澄清抄袭争议</div>
               <img
                 class="trending-mark"
                 src="https://i0.hdslb.com/bfs/activity-plat/static/20221213/eaf2dd702d7cc14d8d9511190245d057/lrx9rnKo24.png@28h"
-              />
+                alt=""/>
             </div>
             <div class="trending-item" tabindex="0">
-              <div class="trending-rank search-rank-top">3</div>
+              <div class="trending-rank">3</div>
               <div class="trending-text">湖南暴雪已致1万多人受灾</div>
               <img
                 class="trending-mark"
@@ -291,7 +292,7 @@ const clearHistories = () => {
   border: 1px solid #e3e5e7;
   height: 40px;
   width: 500px;
-  background-color: #fff;
+  background-color: var(--va-bg-color-1);
   opacity: 0.9;
   transition: background-color 0.3s;
   border-radius: 8px;
@@ -316,7 +317,7 @@ const clearHistories = () => {
     border: none;
     background-color: transparent;
     box-shadow: none;
-    color: #18191c;
+    color: var(--va-text-color-1);
     font-size: 14px;
     line-height: 20px;
     outline: none;
@@ -337,7 +338,7 @@ const clearHistories = () => {
 
 // 焦点选中时改变背景色
 .focus {
-  background-color: #e3e5e7;
+  background-color: var(--va-input-focus-bg-color);
 }
 
 // 搜索按钮
@@ -386,7 +387,7 @@ const clearHistories = () => {
   width: 100%;
   max-height: 612px;
   overflow-y: auto;
-  background: #ffffff;
+  background: var(--va-bg-color-1);
   border: 1px solid #e3e5e7;
   border-top: none;
   border-radius: 0 0 8px 8px;
@@ -399,6 +400,7 @@ const clearHistories = () => {
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
+  color: var(--va-text-color-1);
 
   .title {
     height: 24px;
@@ -467,10 +469,6 @@ const clearHistories = () => {
     color: #9499a0;
   }
 
-  .search-rank-top {
-    color: #18191c;
-  }
-
   .trending-text {
     font-size: 14px;
     line-height: 17px;
@@ -480,6 +478,7 @@ const clearHistories = () => {
     overflow: hidden;
     text-overflow: ellipsis;
     letter-spacing: 0;
+    color: var( --va-text-color-2);
   }
 
   .trending-mark {
@@ -533,5 +532,22 @@ const clearHistories = () => {
       fill: #3cc1f0;
     }
   }
+}
+
+.icon-search {
+  width: 20px;
+  height: 20px;
+  vertical-align: -0.15em;
+  fill: var(--va-text-color-3);
+  overflow: hidden;
+
+  &:hover {
+    fill: #00a1d6;
+  }
+}
+
+.button-clear {
+  background-color: var(--va-btn-bg-color);
+  color: var(--va-text-color-1);
 }
 </style>

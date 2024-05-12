@@ -1,6 +1,22 @@
 :root {
-    --el-bg-color-page2: skyblue;
+    --va-nav-bg-color: #eff4f8;
+    --va-color-white-fff: #fff;
+    --va-nav-text-color: #141414;
+    --va-bg-color-1: #fff;
+    --va-text-color-1: #141414;
+    --va-text-color-2: #000;
+    --va-text-color-3: #1d2225;
+    --va-input-focus-bg-color: #e3e5e7;
+    --va-btn-bg-color: #F6F7F8;
 }
 html.dark {
-    --el-bg-color-page2: #0a0a0a;
+    --va-nav-bg-color: #141414;
+    --va-nav-text-color: #fff;
+    --va-bg-color-1: #141414;
+    --va-text-color-1: #fff;
+    --va-text-color-2: #eff4f8;
+    --va-nav-border-color: #4c4d4f;
+    --va-text-color-3: #fff;
+    --va-input-focus-bg-color: #4c4d4f;
+    --va-btn-bg-color: #4c4d4f;
 }

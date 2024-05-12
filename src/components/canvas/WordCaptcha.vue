@@ -220,7 +220,7 @@ const reset = () => {
     </div>
     <!-- 关闭 -->
     <div class="close" @click="$emit('captchaCloseEvent')">
-      <svg-icon icon-name="icon-captcha-close" class="close-icon" size="22"></svg-icon>
+      <svg-icon icon-name="icon-captcha-close" class="icon-captcha-close" size="22"></svg-icon>
     </div>
     <!-- 图片画板   -->
     <div class="captcha-container" :style="{ width: `${props.width}px` }">
@@ -276,7 +276,7 @@ const reset = () => {
   width: 400px;
   height: 300px;
   border-radius: 20px;
-  background-color: #fff;
+  background-color: var(--va-bg-color-1);
   padding: 20px;
   box-shadow:
     8px 8px 16px #d0d0d0,
@@ -288,6 +288,7 @@ const reset = () => {
 
     span {
       font-weight: bold;
+      color: var(--va-text-color-1);
     }
   }
 
@@ -435,6 +436,18 @@ const reset = () => {
 
   &:hover {
     background: deepskyblue;
+  }
+}
+
+.icon-captcha-close {
+  width: 20px;
+  height: 20px;
+  vertical-align: -0.15em;
+  fill: var(--va-text-color-1);
+  overflow: hidden;
+
+  &:hover {
+    fill: #00a1d6;
   }
 }
 </style>

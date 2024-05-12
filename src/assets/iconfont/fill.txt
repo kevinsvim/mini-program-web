@@ -5,3 +5,4 @@
  icon-pwd-hide
  icon-pwd-show
  icon-tip
+ icon-captcha-close

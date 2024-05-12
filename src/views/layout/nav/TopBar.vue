@@ -261,7 +261,6 @@ const toDownload = () => {
 </script>
 
 <style scoped lang="scss">
-@import '@/styles/theme/handle';
 .navbar {
   display: flex;
   position: fixed;
@@ -273,11 +272,10 @@ const toDownload = () => {
   min-width: 1000px;
   height: $base-nav-height;
   color: #222226;
-  @include background_color('nav-bg-color');
+  background-color: var(--va-nav-bg-color);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   transition: top 0.2s ease-in-out;
-  border-bottom: 1px solid;
-  @include border_bottom_color('border-bottom-color');
+  border-bottom-color: 1px solid var(--va-nav-border-color);
   z-index: 998;
 
   .logo {
@@ -384,7 +382,7 @@ const toDownload = () => {
 .nav-font {
   padding: 0 1rem;
   font-size: 0.9rem;
-  @include font_color('nav-font-color');
+  color: var(--va-nav-text-color);
   margin: 0;
   height: 100%;
   display: flex;
@@ -420,7 +418,7 @@ const toDownload = () => {
 
   span {
     cursor: pointer;
-    @include font_color('nav-font-color');
+    color: var(--va-nav-text-color);
   }
 }
 
@@ -456,7 +454,7 @@ const toDownload = () => {
   margin-top: 10px;
   span {
     margin-left: 5px;
-    color: #141414;
+    color: var(--va-nav-text-color);
   }
 }
 

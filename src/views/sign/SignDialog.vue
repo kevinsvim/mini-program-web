@@ -2,7 +2,9 @@
   <div class="dialog-overlay">
     <div class="sign-dialog">
       <!---->
-      <div class="sign-close-icon" @click="$emit('hideEvent')"></div>
+      <div class="sign-close-icon" @click="$emit('hideEvent')">
+        <svg-icon icon-name="icon-captcha-close" class="icon-captcha-close" size="24"></svg-icon>
+      </div>
       <!-- 左侧 -->
       <div class="sign-scan-wp">
         <div class="sign-scan-title">扫描二维码登录</div>
@@ -38,8 +40,8 @@
           </div>
         </div>
         <div class="sign-scan-desc">
-          <p>请使用 <a href="https://app.bilibili.com/" target="_blank">哔哩哔哩客户端</a></p>
-          <p>扫码登录或扫码下载APP</p>
+          <p>请打开 <a href="https://app.bilibili.com/" target="_blank">微信关注公众号</a></p>
+          <p>扫码关注自动登录此网站</p>
         </div>
       </div>
       <!-- 中部竖线 -->
@@ -289,7 +291,7 @@ const handleVerifySuccess = () => {
   justify-content: center;
   width: 820px;
   min-height: 430px;
-  background: #fff;
+  background: var(--va-bg-color-1);
   border-radius: 8px;
   padding: 52px 65px 29px 92px;
   background-image: url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login-v2/img/22_open.4ea5f239.png),
@@ -336,14 +338,9 @@ const handleVerifySuccess = () => {
 }
 
 .sign-close-icon {
-  width: 32px;
-  height: 32px;
   position: absolute;
   top: 20px;
   right: 20px;
-  background: url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login-v2/img/close.a35a1809.svg)
-    no-repeat;
-  background-size: 100% 100%;
   cursor: pointer;
   z-index: 2;
 }
@@ -368,6 +365,7 @@ const handleVerifySuccess = () => {
   line-height: 16px;
   color: #505050;
   margin-bottom: 26px;
+  color: var(--va-text-color-1);
 }
 
 .sign-scan-hover-wp {
@@ -424,7 +422,7 @@ const handleVerifySuccess = () => {
   font-weight: 500;
   font-size: 18px;
   line-height: 20px;
-  color: #505050;
+  color: var(--va-text-color-1);
   cursor: pointer;
 }
 
@@ -472,15 +470,18 @@ const handleVerifySuccess = () => {
     width: 100%;
     height: 44px;
     padding: 12px 20px;
+    color: var(--va-text-color-2);
 
     input {
       -webkit-box-flex: 1;
       -ms-flex: 1;
       flex: 1;
       min-width: 0;
-      -webkit-box-shadow: 0 0 0 1000px #fff inset;
-      box-shadow: inset 0 0 0 1000px #fff;
+      -webkit-box-shadow: 0 0 0 1000px var(--va-bg-color-1) inset;
+      box-shadow: inset 0 0 0 1000px var(--va-bg-color-1);
       margin-left: 20px;
+      color: var(--va-text-color-2);
+      background-color: var(--va-bg-color-1);
 
       &::placeholder {
         color: #c9c9c9; /* 设置 placeholder 文本的颜色 */
@@ -731,7 +732,9 @@ const handleVerifySuccess = () => {
   color: #c9ccd0 !important;
   cursor: not-allowed;
 }
-
+circle {
+  fill: blue; /* 改变圆圈内部的颜色为蓝色 */
+}
 .clickable {
   color: #00a1d6;
   cursor: pointer;
@@ -773,6 +776,18 @@ const handleVerifySuccess = () => {
     font-size: 12px;
     color: #999;
     line-height: 18px;
+  }
+}
+
+.icon-captcha-close {
+  width: 20px;
+  height: 20px;
+  vertical-align: -0.15em;
+  fill: var(--va-text-color-1);
+  overflow: hidden;
+
+  &:hover {
+    fill: #00a1d6;
   }
 }
 </style>

@@ -14,7 +14,7 @@
 </template>
 <script setup lang="ts">
 
-import VaultNavigationBar from "@/views/layout/nav/VaultNavigationBar.vue";
+import VaultNavigationBar from "@/views/layout/nav/TopBar.vue";
 import VaultFooter from "@/views/layout/footer/VaultFooter.vue";
 </script>
 

@@ -13,7 +13,7 @@ const router = createRouter({
         {
           path: '/index',
           name: 'home',
-          component: () => import('@/views/home/VaultHomePage.vue'),
+          component: () => import('@/views/home/PortalPage.vue'),
           meta: {
             title: '首页',
             keepAlive: true,
