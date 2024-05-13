@@ -14,9 +14,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useDark, useToggle } from '@vueuse/core'
-
-const isDark = useDark()
+import { useToggle } from '@vueuse/core'
+import { isDark } from "@/styles/theme/dark";
 const toggleDark = useToggle(isDark)
 
 function updateView(event: MouseEvent) {

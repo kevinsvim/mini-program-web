@@ -13,7 +13,7 @@
         <span class="header-write">写文章</span>
       </div>
       <div>
-        <el-button type="primary" @click="dark">切换主题</el-button>
+        <el-button type="primary" @click="changeTheme">切换主题</el-button>
       </div>
       <div class="header-right">
         <el-avatar
@@ -224,6 +224,7 @@ import LogoTitle from '@/components/nav/LogoTitle.vue'
 import type { BlogTypes } from '@/types/blog'
 import articleApi from '@/api/article'
 import AddTagBox from '@/components/box/AddTagBox.vue'
+import { isDark } from "@/styles/theme/dark";
 
 const route = useRoute()
 const divRef = ref()
@@ -269,7 +270,6 @@ const articleSetting = {
 const disabled = reactive({
   publishBtnDisabled: true
 })
-const isDark = ref(true)
 onMounted(() => {
   window.addEventListener('beforeunload', beforeLeave)
   aiEditor = new AiEditor({
@@ -328,7 +328,6 @@ const colorSetting = reactive({
   bottomBrColor: '1px solid #eee'
 })
 const dark = () => {
-  isDark.value = !isDark.value
   if (isDark.value) {
     colorSetting.titleColor = '#eee'
     colorSetting.titleBgColor = '#1a1b1e'
@@ -344,6 +343,10 @@ const dark = () => {
     colorSetting.bottomBgColor = '#fff'
     colorSetting.bottomBrColor = '1px solid #eee'
   }
+}
+const changeTheme = () => {
+  isDark.value = !isDark.value
+  dark()
 }
 /**
  * 监听内容失去焦点
