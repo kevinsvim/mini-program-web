@@ -456,7 +456,7 @@ const clearHistories = () => {
   padding-left: 16px;
 
   &:hover {
-    background-color: #e3e5e7;
+    background-color: var(--va-bg-hover-2);
   }
   .trending-rank {
     width: 15px;

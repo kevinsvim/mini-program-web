@@ -4,21 +4,33 @@
     --va-color-white-fff: #fff;
     --va-nav-text-color: #141414;
     --va-bg-color-1: #fff;
+    --va-bg-color-2: #fff;
     --va-text-color-1: #141414;
     --va-text-color-2: #000;
     --va-text-color-3: #1d2225;
+    --va-text-color-4: #606266;
+    --va-text-color-5: #3c3C4399;
     --va-input-focus-bg-color: #e3e5e7;
     --va-btn-bg-color: #F6F7F8;
+    --va-br-color-1: #F0F0F0;
+    --va-bg-hover: #FCFCFC;
+    --va-bg-hover-2: #e3e5e7;
 }
 html.dark {
     color-scheme: dark;
-    --va-nav-bg-color: #141414;
+    --va-nav-bg-color: #2a2a2a;
     --va-nav-text-color: #fff;
     --va-bg-color-1: #141414;
+    --va-bg-color-2: #2a2a2a;
     --va-text-color-1: #fff;
     --va-text-color-2: #eff4f8;
-    --va-nav-border-color: #4c4d4f;
     --va-text-color-3: #fff;
+    --va-text-color-4: #d0d0d0;
+    --va-text-color-5: #d0d0d0;
+    --va-nav-border-color: #4c4d4f;
     --va-input-focus-bg-color: #4c4d4f;
     --va-btn-bg-color: #4c4d4f;
+    --va-br-color-1: #393939;
+    --va-bg-hover: #303030;
+    --va-bg-hover-2: #303030;
 }

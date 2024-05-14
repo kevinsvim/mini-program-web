@@ -93,7 +93,7 @@ const activeName = ref('first')
   height: 400px;
   margin-top: 10px;
   border-radius: 6px;
-  background-color: var(--el-bg-color-page)
+  background-color: var(--va-bg-color-2)
 }
 
 .el-carousel__item h3 {

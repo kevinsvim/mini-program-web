@@ -25,5 +25,22 @@ export default [
         }
       }
     }
+  },
+  {
+    url: '/secured/article/save',
+    method: 'post',
+    response: (
+        data: any
+    ): ApiTypes.ResponseDataType<any> => {
+      console.log(data)
+      return {
+        code: 200,
+        success: true,
+        msg: '发布成功',
+        data: {
+          id: '123'
+        }
+      }
+    }
   }
 ]

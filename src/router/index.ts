@@ -59,6 +59,23 @@ const router = createRouter({
             dirty: true,
           }
         },
+        {
+          path: '/published',
+          name: 'published',
+          component: () => import('@/views/blog/Published.vue'),
+          meta: {
+            title: 'published',
+            keepAlive: true,
+            requireAuth: true,
+            breadcrumb: [],
+            affix: true,
+            activeMenu: '/published',
+            icon: 'icon-about',
+            order: 2,
+            hidden: false,
+            dirty: true,
+          }
+        },
       ]
     },
     {
@@ -72,23 +89,6 @@ const router = createRouter({
         breadcrumb: [],
         affix: true,
         activeMenu: '/write',
-        icon: 'icon-about',
-        order: 2,
-        hidden: false,
-        dirty: true,
-      }
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: () => import('@/views/blog/TestEditor.vue'),
-      meta: {
-        title: 'test',
-        keepAlive: true,
-        requireAuth: true,
-        breadcrumb: [],
-        affix: true,
-        activeMenu: '/test',
         icon: 'icon-about',
         order: 2,
         hidden: false,

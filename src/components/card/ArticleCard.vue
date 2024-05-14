@@ -96,14 +96,14 @@ const { cover, label, title, content, publishDate, publisher, views, comments, l
 .article-item {
   display: flex;
   gap: 20px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--va-br-color-1);
   padding: 15px;
   transition: 0.3s;
   position: relative;
 
   .article-meta {
     font-size: 14px;
-    color: #3c3C4399;
+    color: var(--va-text-color-5);
     display: flex;
     justify-content: space-between;
   }
@@ -113,7 +113,7 @@ const { cover, label, title, content, publishDate, publisher, views, comments, l
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
-    color: #606266;
+    color: var(--va-text-color-4);
     font-size: 15px;
     line-height: 1.625;
     margin-top: 10px;
@@ -130,7 +130,7 @@ const { cover, label, title, content, publishDate, publisher, views, comments, l
   }
 
   &:hover {
-    background-color: #fcfcfc;
+    background-color: var(--va-bg-hover);
   }
 }
 
@@ -140,6 +140,10 @@ const { cover, label, title, content, publishDate, publisher, views, comments, l
   font-weight: 500;
   font-size: 20px;
   overflow: hidden;
+
+  a {
+    color: var(--va-text-color-1);
+  }
 
   .title {
     display: inline-block;

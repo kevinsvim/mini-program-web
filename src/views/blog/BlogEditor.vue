@@ -147,9 +147,9 @@
                     </span>
                   </label>
                   <el-radio-group v-model="article.type">
-                    <el-radio :label="1" class="theme-text">原创</el-radio>
-                    <el-radio :label="2" class="theme-text">转载</el-radio>
-                    <el-radio :label="3" class="theme-text">翻译</el-radio>
+                    <el-radio :value="1" class="theme-text">原创</el-radio>
+                    <el-radio :value="2" class="theme-text">转载</el-radio>
+                    <el-radio :value="3" class="theme-text">翻译</el-radio>
                   </el-radio-group>
                 </div>
                 <!-- 原文链接 -->
@@ -177,9 +177,9 @@
                     </span>
                   </label>
                   <el-radio-group v-model="article.visibleRange">
-                    <el-radio :label="1" class="theme-text">全部可见</el-radio>
-                    <el-radio :label="2" class="theme-text">粉丝可见</el-radio>
-                    <el-radio :label="3" class="theme-text">仅我可见</el-radio>
+                    <el-radio :value="1" class="theme-text">全部可见</el-radio>
+                    <el-radio :value="2" class="theme-text">粉丝可见</el-radio>
+                    <el-radio :value="3" class="theme-text">仅我可见</el-radio>
                   </el-radio-group>
                 </div>
                 <!-- 添加封面 -->
@@ -226,6 +226,7 @@ import articleApi from '@/api/article'
 import AddTagBox from '@/components/box/AddTagBox.vue'
 import { isDark } from "@/styles/theme/dark";
 
+import { ElLoading } from 'element-plus'
 const route = useRoute()
 const divRef = ref()
 const hasUnsavedContent = ref(false)
@@ -361,6 +362,12 @@ watch([() => hasUnsavedContent.value, () => article.title], () => {
 const handlePublish = () => {
   // 检测是否满足发布条件
   if (article.title !== '' && aiEditor?.getText() !== '') {
+    // 开启loading
+    const loading = ElLoading.service({
+      lock: true,
+      text: '发布中...',
+      background: 'rgba(0, 0, 0, 0.7)',
+    })
     articleApi
       .saveArticle(article)
       .then((res) => {
@@ -368,7 +375,7 @@ const handlePublish = () => {
       })
       .catch((error) => {
         console.log(error)
-      })
+      }).finally(() => loading.close())
   } else {
     // 提示不存在发布条件
     alert('请保证你已经填写了标题和内容')
