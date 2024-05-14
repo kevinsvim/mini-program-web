@@ -12,9 +12,6 @@
         <el-divider direction="vertical" style="height: 25px" />
         <span class="header-write">写文章</span>
       </div>
-      <div>
-        <el-button type="primary" @click="changeTheme">切换主题</el-button>
-      </div>
       <div class="header-right">
         <el-avatar
           style="cursor: pointer"
@@ -22,6 +19,7 @@
           :size="35"
           :src="'https://pic1.zhimg.com/v2-bd64c3ac8d203f791398c497f0752ee5_r.jpg?source=1940ef5c'"
         />
+        <el-button style="margin-left: 20px" type="primary" @click="changeTheme">切换主题</el-button>
       </div>
     </div>
     <!-- 文章区域 -->
