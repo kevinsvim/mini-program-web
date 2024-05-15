@@ -81,7 +81,7 @@ const router = createRouter({
     {
       path: '/published',
       name: 'published',
-      component: () => import('@/views/blog/Published.vue'),
+      component: () => import('@/views/blog/PublishedSucc.vue'),
       meta: {
         title: 'published',
         keepAlive: true,
