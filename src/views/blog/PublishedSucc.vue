@@ -16,13 +16,21 @@
           :size="35"
           :src="'https://pic1.zhimg.com/v2-bd64c3ac8d203f791398c497f0752ee5_r.jpg?source=1940ef5c'"
         />
-        <el-button style="margin-left: 20px" type="primary" @click="isDark = !isDark">切换主题</el-button>
+        <el-button style="margin-left: 20px" type="primary" @click="isDark = !isDark"
+          >切换主题</el-button
+        >
       </div>
     </div>
-    <div class="container">
-      <a class="success-modal-title"><img
-          src="https://mp-blog.csdn.net/mp_blog/img/back.ae64b651.png" alt="back"/><span
-          style="margin-left: 8px">管理博文</span></a>
+    <div class="container" :class="{ 'bg-dark': isDark, 'bg-light': !isDark }">
+      <a class="success-modal-title"
+        ><img src="https://mp-blog.csdn.net/mp_blog/img/back.ae64b651.png" alt="back" /><span
+          style="margin-left: 8px"
+          >管理博文</span
+        ></a
+      >
+      <div class="success">
+        <img src="@/assets/iconfont/picture/success.png" alt="">
+      </div>
     </div>
   </div>
 </template>
@@ -35,6 +43,7 @@ import { isDark } from '@/styles/theme/dark'
   position: fixed;
   display: flex;
   height: 50px;
+  width: 100%;
   line-height: 50px;
   padding: 0 23%;
   top: 0;
@@ -79,27 +88,38 @@ import { isDark } from '@/styles/theme/dark'
   -webkit-box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05);
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.05);
   border-radius: 2px;
-  border: 1px solid #f0f0f5;
-  background: #fff url(https://mp-blog.csdn.net/mp_blog/img/success-bg.4fb05392.png);
   background-size: cover;
   padding: 12px 24px 24px;
   -webkit-font-smoothing: antialiased;
 }
 
+.bg-dark {
+  background: #000 url(@/assets/bg/published-dark.jpg);
+}
+
+.bg-light {
+  background: #fff url(@/assets/bg/published-light.png);
+}
+
 .success-modal-title {
   height: 24px;
   font-size: 14px;
-  font-family: PingFang SC, sans-serif;
+  font-family:
+    PingFang SC,
+    sans-serif;
   font-weight: 400;
   color: #555666;
   line-height: 24px;
   cursor: pointer;
 
-  img{
+  img {
     width: 6px;
     height: 10px;
   }
 }
 
-
+.success {
+  background: url(@/assets/iconfont/picture/success.png);
+  width: 200px;
+}
 </style>
