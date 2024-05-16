@@ -132,7 +132,7 @@
                     rows="3"
                     type="textarea"
                   />
-                  <el-button size="small" round class="extract-btn">
+                  <el-button size="small" round class="extract-btn" @click="handleExtract">
                     <span style="font-size: 11px">快速提取</span>
                   </el-button>
                 </div>
@@ -366,6 +366,7 @@ const handlePublish = () => {
       text: '发布中...',
       background: 'rgba(0, 0, 0, 0.7)',
     })
+    console.log(article)
     articleApi
       .saveArticle(article)
       .then((res) => {
@@ -547,6 +548,26 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
     hasSelectedTag.splice(index, 1)
     article.tagIds.splice(index, 1)
   }
+}
+/**
+ * 处理内容摘要快速提取
+ */
+const handleExtract = () => {
+  // 获取html内容
+  const htmlStr = aiEditor?.getHtml() ?? ''
+  // 解析Dom节点
+  const doc = new DOMParser().parseFromString(htmlStr, 'text/html')
+  let text = ''
+  // 查找标题
+  const pTags = doc.querySelectorAll('p')
+  for (const pTag of pTags) {
+    if (text.length < 200) {
+      text += pTag.textContent?.trim() ?? ''
+    } else {
+      break
+    }
+  }
+  article.abstract = text.length > 200 ? text.substring(0, 200) : text
 }
 </script>
 <style lang="scss">
