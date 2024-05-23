@@ -13,6 +13,7 @@
     --va-input-focus-bg-color: #e3e5e7;
     --va-btn-bg-color: #F6F7F8;
     --va-br-color-1: #F0F0F0;
+    --va-br-color-2: #e3e3e3;
     --va-bg-hover: #FCFCFC;
     --va-bg-hover-2: #e3e5e7;
 }
@@ -31,6 +32,7 @@ html.dark {
     --va-input-focus-bg-color: #4c4d4f;
     --va-btn-bg-color: #4c4d4f;
     --va-br-color-1: #393939;
+    --va-br-color-2: #141414;
     --va-bg-hover: #303030;
     --va-bg-hover-2: #303030;
 }

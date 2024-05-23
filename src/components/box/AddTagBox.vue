@@ -268,9 +268,9 @@ const handleSelectTag = (item: BlogTypes.RestaurantItem) => {
   width: 580px;
   height: auto;
   z-index: 2006;
-  background: #fff;
+  background: var(--va-bg-color-2);
   box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);
-  border: 1px solid #e3e3e3;
+  border: 1px solid var(--va-br-color-2);
   padding: 10px 15px;
 }
 

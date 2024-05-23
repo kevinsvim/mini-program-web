@@ -12,12 +12,12 @@
         <!-- 左侧功能 -->
         <li class="left-side-nav">
           <ul class="main-nav-left-list">
-            <li><a class="nav-font" onclick="event.defaultPrevented" @click="toHome"><span class="func" :class="{current: current == 'home'}">首页</span></a></li>
-            <li><a class="nav-font" onclick="event.defaultPrevented" @click="toTool"><span class="func" :class="{current: current == 'tool'}">工具指南</span></a></li>
-            <li><a class="nav-font" onclick="event.defaultPrevented" @click="toArticle"><span class="func" :class="{current: current == 'article'}">文章</span></a></li>
-            <li><a class="nav-font" onclick="event.defaultPrevented" @click="toPlaza"><span class="func" :class="{current: current == 'plaza'}">聚焦广场</span></a></li>
-            <li><a class="nav-font" onclick="event.defaultPrevented" @click="toAI"><span class="func" :class="{current: current == 'ai'}">AI导航</span></a></li>
-            <li><a class="nav-font" onclick="event.defaultPrevented" @click="toDownload"><span class="func" :class="{current: current == 'download'}">下载</span></a></li>
+            <li><a class="nav-font" @click="toHome"><span class="func" :class="{current: current == 'home'}">首页</span></a></li>
+            <li><a class="nav-font" @click="toTool"><span class="func" :class="{current: current == 'tool'}">工具指南</span></a></li>
+            <li><a class="nav-font" @click="toArticle"><span class="func" :class="{current: current == 'article'}">文章</span></a></li>
+            <li><a class="nav-font" @click="toPlaza"><span class="func" :class="{current: current == 'plaza'}">聚焦广场</span></a></li>
+            <li><a class="nav-font" @click="toAI"><span class="func" :class="{current: current == 'ai'}">AI导航</span></a></li>
+            <li><a class="nav-font" @click="toDownload"><span class="func" :class="{current: current == 'download'}">下载</span></a></li>
           </ul>
         </li>
         <!-- 中间搜索 -->
@@ -211,6 +211,7 @@ const handleScroll = () => {
  */
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
+
 })
 /**
  * 销毁监听器
@@ -220,42 +221,48 @@ onBeforeUnmount(() => {
 })
 
 const signDialogVisible = ref(false)
-const toPlaza = () => {
+const toPlaza = (event: Event) => {
+  event.preventDefault()
   if (current.value == 'plaza') {
     return
   }
   current.value = 'plaza'
   router.push('/plaza')
 }
-const toTool = () => {
+const toTool = (event: Event) => {
+  event.preventDefault()
   if (current.value == 'tool') {
     return
   }
   current.value = 'tool'
   router.push('/tool')
 }
-const toArticle = () => {
+const toArticle = (event: Event) => {
+  event.preventDefault()
   if (current.value == 'article') {
     return
   }
   current.value = 'article'
   router.push('/article')
 }
-const toHome = () => {
+const toHome = (event: Event) => {
+  event.preventDefault()
   if (current.value == 'home') {
     return
   }
   current.value = 'home'
   router.push('/')
 }
-const toAI = () => {
+const toAI = (event: Event) => {
+  event.preventDefault()
   if (current.value == 'ai') {
     return
   }
   current.value = 'ai'
   router.push('/ai')
 }
-const toDownload = () => {
+const toDownload = (event: Event) => {
+  event.preventDefault()
   router.push('/download')
 }
 </script>
