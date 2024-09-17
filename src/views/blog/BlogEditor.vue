@@ -155,13 +155,13 @@
                   <input type="text" v-model="article.copyFrom" placeholder="请输入原文链接" style="background-color: var(--aie-container-bg); color: var(--aie-text-color);"/>
                   <el-checkbox
                     v-if="article.type == 2"
-                    v-model="article.isAuthorized"
+                    v-model="article.isAuthorize"
                     :label="articleSetting.reprinted"
                     size="large"
                   />
                   <el-checkbox
                     v-if="article.type == 3"
-                    v-model="article.isAuthorized"
+                    v-model="article.isAuthorize"
                     :label="articleSetting.translation"
                     size="large"
                   />
@@ -241,7 +241,7 @@ const article = reactive<BlogTypes.ArticleType>({
   copyFrom: '',
   abstract: '',
   // 是否授权文章（转载或翻译）
-  isAuthorized: false,
+  isAuthorize: false,
   // 可见范围(1-全部可见，2-粉丝可见，3-仅我可见)
   visibleRange: 1,
   // 文章标签
@@ -366,6 +366,7 @@ const handlePublish = () => {
       text: '发布中...',
       background: 'rgba(0, 0, 0, 0.7)',
     })
+    article!.content = aiEditor!.getHtml()
     console.log(article)
     articleApi
       .saveArticle(article)
@@ -379,6 +380,7 @@ const handlePublish = () => {
     // 提示不存在发布条件
     alert('请保证你已经填写了标题和内容')
   }
+
 }
 
 const beforeLeave = async (e: any) => {
@@ -555,7 +557,7 @@ const handleTagClose = (item: BlogTypes.RestaurantItem) => {
 const handleExtract = () => {
   // 获取html内容
   const htmlStr = aiEditor?.getHtml() ?? ''
-  // 解析Dom节点
+  // 解析dom节点
   const doc = new DOMParser().parseFromString(htmlStr, 'text/html')
   let text = ''
   // 查找标题

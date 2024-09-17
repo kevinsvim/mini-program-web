@@ -16,7 +16,7 @@ export namespace BlogTypes {
         /* 原文链接 */
         copyFrom: string,
         /* 是否授权文章 */
-        isAuthorized: boolean,
+        isAuthorize: boolean,
         /* 可见范围 */
         visibleRange: number,
         /* 文章摘要 */

@@ -13,8 +13,9 @@ let refreshTokenLoading = false
 /**
  * 创建axios实例
  */
+const baseURL = '/api';
 const service = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_API,
+  baseURL: baseURL,
   timeout: 5000
 })
 /**
@@ -41,6 +42,7 @@ service.interceptors.response.use(
     return response.data
   },
   async (error) => {
+    console.log(error)
     let msg: string
     switch (error.response.code) {
       case 400:

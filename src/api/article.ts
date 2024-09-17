@@ -4,7 +4,7 @@ import type { ApiTypes } from "@/types/api";
 export default {
     saveArticle(article: BlogTypes.ArticleType): Promise<ApiTypes.ResponseDataType> {
         return request({
-            url: '/secured/article/save',
+            url: '/secured/article/saveArticle',
             method: 'post',
             data: article
         })
