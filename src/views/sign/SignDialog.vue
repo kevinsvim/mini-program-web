@@ -58,7 +58,7 @@
           </div>
           <div class="login-tab-line"></div>
           <div class="login-tab-item" :class="{ activeTab: loginParam.loginType == 2 }" @click="loginParam.loginType = 2">
-            短信登录
+            邮箱登录
           </div>
         </div>
         <div v-if="loginParam.loginType == 1" class="login-pwd-wp">
@@ -122,7 +122,7 @@
             </div>
           </form>
           <div class="btn_wp">
-            <div class="btn_other">注册</div>
+            <div class="btn_other" @click="loginParam.loginType = 2">注册</div>
             <div class="btn_primary" @click="captcha.isShow = true">登录</div>
           </div>
         </div>
@@ -130,12 +130,12 @@
           <form class="tab__form">
             <div class="form__item">
               <div class="login-sms-wp__cid">
-                +86<svg-icon icon-name="icon-arrow-d"></svg-icon>
+                邮箱
               </div>
               <input
                 maxlength="15"
                 oninput="value=value.replace(/[^\d]/g, '')"
-                placeholder="请输入手机号"
+                placeholder="请输入邮箱"
               />
               <div class="login-sms-wp__vertical-line"></div>
               <div class="login-sms-send clickable disable">获取验证码</div>
@@ -144,8 +144,9 @@
             <div class="form__item">
               <div>验证码</div>
               <input
-                placeholder="请输入验证码"
+                placeholder="请输入邮箱验证码"
                 maxlength="6"
+                v-model="loginParam.code"
                 oninput="value=value.replace(/[^\d]/g, '')"
               />
             </div>
@@ -215,11 +216,12 @@ const userStore = useUserStore()
 defineEmits(['hideEvent'])
 // 密码是否隐藏
 const pwdVisible = ref<boolean>(false)
-// 登录方式[1:密码登录, 2:短信登录]
+// 登录方式[1:密码登录, 2:邮箱登录]
 const loginParam = reactive<MemberTypes.LoginReqType>({
   loginType: 1,
   username: '',
-  password: ''
+  password: '',
+  code: ''
 })
 // 密码忘记提示
 const forgetPwd = ref(false)
@@ -244,7 +246,7 @@ const toLogin = () => {
       alert('账号或密码错误')
     })
   } else if (loginParam.loginType === 2) {
-    // 短信登录
+    // 邮箱登录
   } else {
     // 不存在的登录方式
   }

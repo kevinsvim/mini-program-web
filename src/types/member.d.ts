@@ -7,6 +7,7 @@ export namespace MemberTypes {
         loginType: number
         username: string
         password: string
+        code: string
     }
 
     /**
